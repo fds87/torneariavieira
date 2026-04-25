@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(git -C /Users/fabiodiogo/Documents/torneariavieira status)",
-      "Bash(git init *)"
+      "Bash(git init *)",
+      "Bash(gh repo *)",
+      "Bash(git rm *)"
     ]
   }
 }

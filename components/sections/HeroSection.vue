@@ -2,16 +2,13 @@
   <section id="hero" class="hero">
     <TechBg />
 
-    <!-- Vertical accent lines -->
     <div class="hero__vline hero__vline--l"></div>
     <div class="hero__vline hero__vline--r"></div>
 
-    <!-- Background lettering -->
     <div class="hero__bg-text font-display">TV</div>
 
     <div class="hero__content">
 
-      <!-- Location tag -->
       <div class="hero__location">
         <span class="hero__dot"></span>
         <span class="label-tech" style="color:var(--c-muted); font-size:0.65rem">
@@ -19,19 +16,16 @@
         </span>
       </div>
 
-      <!-- Title -->
       <h1 class="hero__title font-display">
         <span class="hero__t1">USINAGEM</span>
         <span class="hero__t2">DE PRECISÃO</span>
       </h1>
 
-      <!-- Subtitle -->
       <p class="hero__sub">
         Fabricação de peças industriais sob desenho.<br/>
         Do eixo ao conjunto mecânico — tolerâncias micrométricas, entrega precisa.
       </p>
 
-      <!-- Spec strip -->
       <div class="hero__specs">
         <div v-for="sp in heroSpecs" :key="sp.label" class="hero__spec">
           <span class="hero__spec-val font-display">{{ sp.val }}</span>
@@ -39,19 +33,16 @@
         </div>
       </div>
 
-      <!-- Tags -->
       <div class="hero__tags">
         <span v-for="(s,i) in specialties" :key="i" class="hero__tag label-tech">{{ s }}</span>
       </div>
 
-      <!-- CTAs -->
       <div class="hero__cta">
         <a href="#services" @click.prevent="scrollTo('#services')" class="btn-gold">Ver Serviços</a>
         <a :href="whatsapp" target="_blank" class="btn-outline-gold">WhatsApp</a>
       </div>
     </div>
 
-    <!-- Scroll indicator -->
     <div class="hero__scroll">
       <span class="label-tech" style="font-size:0.55rem; color:var(--c-muted); writing-mode:vertical-rl; letter-spacing:0.25em">SCROLL</span>
       <div class="hero__scroll-line"></div>
@@ -60,7 +51,6 @@
 </template>
 
 <script setup>
-import TechBg from '../ui/TechBg.vue'
 const whatsapp = 'https://wa.me/5541999802662'
 const specialties = ['Eixos sob medida','Conjuntos mecânicos','Nac. de importados','Cabeçotes angulares','Molas usinadas','Bicos injetora']
 const heroSpecs = [
@@ -148,7 +138,6 @@ function scrollTo(hash) { document.querySelector(hash)?.scrollIntoView({ behavio
   margin-bottom: 36px;
 }
 
-/* Spec strip */
 .hero__specs {
   display: flex;
   gap: 0;
@@ -173,7 +162,6 @@ function scrollTo(hash) { document.querySelector(hash)?.scrollIntoView({ behavio
 }
 .hero__spec-lbl { font-size: 0.55rem; color: var(--c-muted); }
 
-/* Tags */
 .hero__tags {
   display: flex; flex-wrap: wrap; gap: 8px;
   margin-bottom: 40px;
@@ -189,7 +177,6 @@ function scrollTo(hash) { document.querySelector(hash)?.scrollIntoView({ behavio
 
 .hero__cta { display: flex; flex-wrap: wrap; gap: 14px; }
 
-/* Scroll indicator */
 .hero__scroll {
   position: absolute;
   right: 32px; bottom: 40px;

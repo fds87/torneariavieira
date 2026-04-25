@@ -16,9 +16,7 @@
 
       <div class="whyus__grid">
         <div v-for="(p, i) in pillars" :key="i" class="pillar">
-          <!-- Icon box -->
           <div class="pillar__icon-box">
-            <!-- Precision -->
             <svg v-if="p.icon === 'precision'" width="22" height="22" viewBox="0 0 24 24" fill="none">
               <circle cx="12" cy="12" r="9" stroke="#C8A96E" stroke-width="1"/>
               <circle cx="12" cy="12" r="3" stroke="#C8A96E" stroke-width="1"/>
@@ -27,12 +25,10 @@
               <line x1="3" y1="12" x2="6" y2="12" stroke="#C8A96E" stroke-width="1"/>
               <line x1="18" y1="12" x2="21" y2="12" stroke="#C8A96E" stroke-width="1"/>
             </svg>
-            <!-- Craft -->
             <svg v-if="p.icon === 'craft'" width="22" height="22" viewBox="0 0 24 24" fill="none">
               <path d="M14.5 4L20 9.5L9.5 20H4V14.5L14.5 4Z" stroke="#C8A96E" stroke-width="1" stroke-linejoin="round"/>
               <line x1="10" y1="14" x2="14" y2="10" stroke="#C8A96E" stroke-width="1"/>
             </svg>
-            <!-- Deadline -->
             <svg v-if="p.icon === 'deadline'" width="22" height="22" viewBox="0 0 24 24" fill="none">
               <rect x="3" y="5" width="18" height="16" stroke="#C8A96E" stroke-width="1"/>
               <line x1="3" y1="9" x2="21" y2="9" stroke="#C8A96E" stroke-width="1"/>
@@ -54,8 +50,7 @@
 </template>
 
 <script setup>
-import { pillars } from '../../data/content.js'
-import TechBg from '../ui/TechBg.vue'
+import { pillars } from '~/data/content.js'
 </script>
 
 <style scoped>
@@ -104,7 +99,6 @@ import TechBg from '../ui/TechBg.vue'
   transition: background 0.3s;
 }
 .pillar:hover { background: var(--c-surface2); }
-
 .pillar__icon-box {
   width: 48px; height: 48px;
   border: 1px solid var(--c-border);
@@ -115,7 +109,6 @@ import TechBg from '../ui/TechBg.vue'
   transition: border-color 0.3s;
 }
 .pillar:hover .pillar__icon-box { border-color: rgba(200,169,110,0.4); }
-
 .pillar__title {
   font-size: 1.5rem;
   letter-spacing: 0.04em;

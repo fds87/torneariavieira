@@ -5,7 +5,6 @@
     <div class="about__inner">
       <div class="about__grid">
 
-        <!-- Text -->
         <div class="about__text">
           <div class="about__label">
             <span class="label-tech" style="color:var(--c-accent)">//</span>
@@ -33,15 +32,12 @@
           </div>
         </div>
 
-        <!-- Image -->
         <div class="about__img-col">
-          <!-- Technical overlay -->
           <svg class="about__svg" xmlns="http://www.w3.org/2000/svg">
             <circle cx="50%" cy="50%" r="42%" fill="none" stroke="currentColor" stroke-width="0.8" stroke-dasharray="6 4" opacity="0.3"/>
             <circle cx="50%" cy="50%" r="25%" fill="none" stroke="currentColor" stroke-width="0.5" opacity="0.2"/>
             <line x1="0" y1="50%" x2="100%" y2="50%" stroke="currentColor" stroke-width="0.5" opacity="0.2"/>
             <line x1="50%" y1="0" x2="50%" y2="100%" stroke="currentColor" stroke-width="0.5" opacity="0.2"/>
-            <!-- corner dims -->
             <line x1="4%" y1="4%" x2="4%" y2="30%" stroke="currentColor" stroke-width="0.7" opacity="0.25"/>
             <line x1="4%" y1="4%" x2="30%" y2="4%" stroke="currentColor" stroke-width="0.7" opacity="0.25"/>
             <line x1="96%" y1="4%" x2="96%" y2="30%" stroke="currentColor" stroke-width="0.7" opacity="0.25"/>
@@ -70,7 +66,6 @@
 </template>
 
 <script setup>
-import TechBg from '../ui/TechBg.vue'
 const specs = [
   { value: 'CNC',  label: 'Usinagem controlada' },
   { value: 'µm',   label: 'Tolerâncias micrométricas' },
@@ -138,7 +133,6 @@ const specs = [
 }
 .about__spec-lbl { font-size: 0.58rem; color: var(--c-muted); }
 
-/* Image column */
 .about__img-col { position: relative; }
 
 .about__svg {

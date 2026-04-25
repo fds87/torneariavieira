@@ -19,9 +19,7 @@
           {{ item.label }}
         </a>
 
-        <!-- Theme toggle -->
         <button @click="toggleTheme" class="theme-toggle" :title="isDark ? 'Modo claro' : 'Modo escuro'">
-          <!-- Sun (light mode) -->
           <svg v-if="isDark" width="16" height="16" viewBox="0 0 24 24" fill="none">
             <circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="1.5"/>
             <line x1="12" y1="2" x2="12" y2="5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
@@ -33,7 +31,6 @@
             <line x1="4.22" y1="19.78" x2="6.34" y2="17.66" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
             <line x1="17.66" y1="6.34" x2="19.78" y2="4.22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
           </svg>
-          <!-- Moon (dark mode) -->
           <svg v-else width="16" height="16" viewBox="0 0 24 24" fill="none">
             <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
@@ -81,9 +78,6 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
-import { useTheme } from '../../composables/useTheme.js'
-
 const { isDark, toggleTheme } = useTheme()
 const whatsapp = 'https://wa.me/5541999802662'
 const scrolled = ref(false)
@@ -139,7 +133,6 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
   object-fit: contain;
   transition: filter 0.35s;
 }
-/* Invert logo for light bg so it remains visible */
 .logo--invert { filter: invert(1) brightness(0.15); }
 :global(:root.dark) .logo__img { filter: none; }
 
@@ -161,7 +154,6 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
 }
 .nav-link:hover { color: var(--c-accent); }
 
-/* Theme toggle */
 .theme-toggle {
   width: 36px; height: 36px;
   display: flex;
@@ -175,7 +167,6 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
 }
 .theme-toggle:hover { border-color: var(--c-accent); color: var(--c-accent); }
 
-/* Mobile actions */
 .header__mobile-actions {
   display: flex;
   align-items: center;
@@ -183,7 +174,6 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
 }
 @media (min-width: 768px) { .header__mobile-actions { display: none; } }
 
-/* Hamburger */
 .hamburger {
   display: flex;
   flex-direction: column;
@@ -206,7 +196,6 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
 .hamburger span.open:nth-child(2) { opacity: 0; }
 .hamburger span.open:nth-child(3) { transform: rotate(-45deg) translate(4px, -4px); }
 
-/* Mobile nav */
 .nav-mobile {
   background: var(--c-surface);
   border-bottom: 1px solid var(--c-border);

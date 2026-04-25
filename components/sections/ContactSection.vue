@@ -4,7 +4,6 @@
     <div class="contact__inner">
       <div class="contact__grid">
 
-        <!-- Left: info -->
         <div class="contact__info">
           <div class="section-head__label">
             <span class="label-tech" style="color: var(--c-accent)">//</span>
@@ -59,7 +58,6 @@
           </div>
         </div>
 
-        <!-- Right: form -->
         <div class="contact__form-wrap card-cut">
           <div class="label-tech" style="font-size:0.65rem; margin-bottom:24px">// Solicitar Orçamento</div>
           <form @submit.prevent="sendWhatsApp" class="contact__form">
@@ -87,8 +85,6 @@
 </template>
 
 <script setup>
-import { reactive } from 'vue'
-import TechBg from '../ui/TechBg.vue'
 const whatsapp = 'https://wa.me/5541999802662'
 const form = reactive({ name: '', company: '', message: '' })
 
@@ -173,8 +169,6 @@ function sendWhatsApp() {
   transition: color 0.2s;
 }
 .contact__item:hover .contact__item-val { color: var(--c-accent); }
-
-/* Form */
 .contact__form-wrap {
   background: var(--c-surface);
   border: 1px solid var(--c-border);
@@ -182,10 +176,7 @@ function sendWhatsApp() {
 }
 .contact__form { display: flex; flex-direction: column; gap: 20px; }
 .form-field { display: flex; flex-direction: column; gap: 8px; }
-.form-label {
-  font-size: 0.6rem;
-  color: var(--c-muted);
-}
+.form-label { font-size: 0.6rem; color: var(--c-muted); }
 .form-input {
   background: var(--c-bg);
   border: 1px solid var(--c-border);

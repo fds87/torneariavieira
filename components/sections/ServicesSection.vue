@@ -4,7 +4,6 @@
 
     <div class="services__inner">
 
-      <!-- Header -->
       <div class="svc-head">
         <div class="svc-head__label">
           <span class="label-tech" style="color:var(--c-accent)">//</span>
@@ -23,7 +22,6 @@
         </div>
       </div>
 
-      <!-- Full-bleed service cards -->
       <div class="svc-list">
         <div
           v-for="(s, i) in services"
@@ -31,19 +29,14 @@
           class="svc-item"
           :class="{ 'svc-item--rev': i % 2 === 1 }"
         >
-          <!-- Large image panel -->
           <div class="svc-img-panel">
-            <!-- Technical drawing SVG overlay per card -->
             <svg class="svc-img-svg" xmlns="http://www.w3.org/2000/svg">
-              <!-- dimension arrows -->
               <line x1="10" y1="24" x2="10" y2="95%" stroke="currentColor" stroke-width="0.7" stroke-dasharray="4 3"/>
               <line x1="5"  y1="24" x2="15" y2="24" stroke="currentColor" stroke-width="0.8"/>
               <line x1="5"  y1="95%" x2="15" y2="95%" stroke="currentColor" stroke-width="0.8"/>
-              <!-- horizontal dim -->
               <line x1="10%"  y1="92%" x2="92%"  y2="92%" stroke="currentColor" stroke-width="0.7" stroke-dasharray="4 3"/>
               <line x1="10%"  y1="88%" x2="10%"  y2="96%" stroke="currentColor" stroke-width="0.8"/>
               <line x1="92%"  y1="88%" x2="92%"  y2="96%" stroke="currentColor" stroke-width="0.8"/>
-              <!-- corner crosshair -->
               <circle cx="88%" cy="12%" r="20" fill="none" stroke="currentColor" stroke-width="0.7"/>
               <circle cx="88%" cy="12%" r="5"  fill="none" stroke="currentColor" stroke-width="0.7"/>
               <line x1="76%" y1="12%" x2="100%" y2="12%" stroke="currentColor" stroke-width="0.5"/>
@@ -52,15 +45,10 @@
 
             <img :src="s.image" :alt="s.title" class="svc-img" />
             <div class="svc-img-tint"></div>
-
-            <!-- Number watermark -->
             <div class="svc-img-num font-display">{{ s.id }}</div>
-
-            <!-- Material badge -->
             <div class="svc-img-badge label-tech">{{ s.material }}</div>
           </div>
 
-          <!-- Text panel -->
           <div class="svc-text-panel">
             <div class="svc-text-panel__inner">
               <div class="svc-text-meta">
@@ -88,8 +76,7 @@
 </template>
 
 <script setup>
-import TechBg from '../ui/TechBg.vue'
-import { services } from '../../data/content.js'
+import { services } from '~/data/content.js'
 const whatsapp = 'https://wa.me/5541999802662'
 </script>
 
@@ -100,21 +87,16 @@ const whatsapp = 'https://wa.me/5541999802662'
   padding: 96px 0 0;
   overflow: hidden;
 }
-
 .services__inner {
   position: relative; z-index: 2;
   max-width: 1280px;
   margin: 0 auto;
   padding: 0 32px;
 }
-
-/* Section header */
 .svc-head { margin-bottom: 64px; }
 .svc-head__label { display:flex; align-items:center; gap:10px; margin-bottom:20px; }
 .svc-head__line { flex:1; height:1px; background:var(--c-border); }
-.svc-head__row {
-  display: flex; flex-direction: column; gap: 20px;
-}
+.svc-head__row { display: flex; flex-direction: column; gap: 20px; }
 @media (min-width:1024px) {
   .svc-head__row { flex-direction:row; align-items:flex-end; justify-content:space-between; }
 }
@@ -131,16 +113,12 @@ const whatsapp = 'https://wa.me/5541999802662'
   font-weight: 500;
   line-height: 1.7;
 }
-
-/* List */
 .svc-list {
   display: flex;
   flex-direction: column;
   gap: 0;
   border-top: 1px solid var(--c-border);
 }
-
-/* Each item: image left + text right (alternating) */
 .svc-item {
   display: grid;
   grid-template-columns: 1fr;
@@ -153,8 +131,6 @@ const whatsapp = 'https://wa.me/5541999802662'
   .svc-item--rev .svc-img-panel  { order: 2; }
   .svc-item--rev .svc-text-panel { order: 1; }
 }
-
-/* Image panel */
 .svc-img-panel {
   position: relative;
   overflow: hidden;
@@ -162,7 +138,6 @@ const whatsapp = 'https://wa.me/5541999802662'
   min-height: 380px;
 }
 @media (min-width: 900px) { .svc-img-panel { min-height: unset; } }
-
 .svc-img-svg {
   position: absolute; inset: 0;
   width: 100%; height: 100%;
@@ -172,7 +147,6 @@ const whatsapp = 'https://wa.me/5541999802662'
   z-index: 2;
 }
 :global(:root.dark) .svc-img-svg { opacity: 0.25; }
-
 .svc-img {
   width: 100%; height: 100%;
   object-fit: contain;
@@ -183,13 +157,11 @@ const whatsapp = 'https://wa.me/5541999802662'
   position: relative; z-index: 1;
 }
 .svc-item:hover .svc-img { transform: scale(1.04); }
-
 .svc-img-tint {
   position: absolute; inset: 0; z-index: 1;
   background: radial-gradient(ellipse at center, transparent 40%, var(--c-surface) 100%);
   pointer-events: none;
 }
-
 .svc-img-num {
   position: absolute;
   bottom: 12px; left: 20px;
@@ -200,7 +172,6 @@ const whatsapp = 'https://wa.me/5541999802662'
   z-index: 3;
   pointer-events: none;
 }
-
 .svc-img-badge {
   position: absolute;
   top: 20px; left: 20px;
@@ -212,8 +183,6 @@ const whatsapp = 'https://wa.me/5541999802662'
   letter-spacing: 0.15em;
 }
 :global(:root.dark) .svc-img-badge { color: #0A0A0A; }
-
-/* Text panel */
 .svc-text-panel {
   display: flex;
   align-items: center;
@@ -221,18 +190,12 @@ const whatsapp = 'https://wa.me/5541999802662'
   background: var(--c-surface);
 }
 .svc-item--rev .svc-text-panel { border-left: none; border-right: 1px solid var(--c-border); }
-
 .svc-text-panel__inner { padding: 48px 40px; }
-
 .svc-text-meta {
   display: flex; align-items: center; gap: 12px;
   margin-bottom: 16px;
 }
-.svc-text-meta__line {
-  width: 40px; height: 1px;
-  background: var(--c-accent);
-}
-
+.svc-text-meta__line { width: 40px; height: 1px; background: var(--c-accent); }
 .svc-item-title {
   font-size: clamp(1.8rem, 3.5vw, 3rem);
   line-height: 0.95;
@@ -242,7 +205,6 @@ const whatsapp = 'https://wa.me/5541999802662'
   transition: color 0.3s;
 }
 .svc-item:hover .svc-item-title { color: var(--c-accent); }
-
 .svc-item-desc {
   color: var(--c-muted);
   font-size: 0.9rem;
@@ -250,7 +212,6 @@ const whatsapp = 'https://wa.me/5541999802662'
   line-height: 1.7;
   margin-bottom: 24px;
 }
-
 .svc-tags { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:32px; }
 .svc-tag {
   font-size: 0.58rem;
@@ -260,6 +221,5 @@ const whatsapp = 'https://wa.me/5541999802662'
   transition: all 0.2s;
 }
 .svc-item:hover .svc-tag { border-color: rgba(200,169,110,0.4); }
-
 .svc-cta { display: inline-block; font-size: 0.65rem; }
 </style>
