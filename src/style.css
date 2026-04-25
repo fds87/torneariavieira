@@ -1,0 +1,124 @@
+@import "tailwindcss";
+
+/* ───── Light mode (default) ───── */
+:root {
+  --c-bg:       #F5F5F3;
+  --c-surface:  #FFFFFF;
+  --c-surface2: #EFEFED;
+  --c-accent:   #B8921E;
+  --c-steel:    #2E6A9A;
+  --c-text:     #1A1A1A;
+  --c-muted:    #777777;
+  --c-border:   #DDDDD8;
+
+  color-scheme: light;
+}
+
+/* ───── Dark mode ───── */
+:root.dark {
+  --c-bg:       #0A0A0A;
+  --c-surface:  #111111;
+  --c-surface2: #161616;
+  --c-accent:   #C8A96E;
+  --c-steel:    #4A7FA5;
+  --c-text:     #E8E8E8;
+  --c-muted:    #666666;
+  --c-border:   #222222;
+
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--c-bg);
+  color: var(--c-text);
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  transition: background 0.35s ease, color 0.35s ease;
+}
+
+/* ───── Utility ───── */
+.font-display  { font-family: 'Bebas Neue', sans-serif; }
+.font-mono-tv  { font-family: 'JetBrains Mono', monospace; }
+
+/* ───── Engineering grid ───── */
+.grid-bg {
+  background-image:
+    linear-gradient(var(--c-border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--c-border) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+:root.dark .grid-bg {
+  background-image:
+    linear-gradient(rgba(200,169,110,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(200,169,110,0.04) 1px, transparent 1px);
+}
+
+/* ───── Chamfered buttons ───── */
+.btn-gold {
+  display: inline-block;
+  background: var(--c-accent);
+  color: #FFFFFF;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 14px 32px;
+  clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  text-decoration: none;
+}
+.btn-gold:hover { background: #9A7818; }
+:root.dark .btn-gold { color: #0A0A0A; }
+:root.dark .btn-gold:hover { background: #D9BC87; }
+
+.btn-outline-gold {
+  display: inline-block;
+  background: transparent;
+  color: var(--c-accent);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 14px 32px;
+  clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+  border: 1px solid var(--c-accent);
+  cursor: pointer;
+  transition: all 0.25s;
+  text-decoration: none;
+}
+.btn-outline-gold:hover {
+  background: var(--c-accent);
+  color: #FFFFFF;
+}
+:root.dark .btn-outline-gold:hover { color: #0A0A0A; }
+
+/* ───── Body text weight boost ───── */
+p, li, span:not(.label-tech) {
+  font-weight: 500;
+}
+
+/* ───── Section label ───── */
+.label-tech {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  color: var(--c-accent);
+  text-transform: uppercase;
+}
+
+/* ───── Chamfered card ───── */
+.card-cut {
+  clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
+}
+
+/* ───── Scrollbar ───── */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: var(--c-bg); }
+::-webkit-scrollbar-thumb { background: var(--c-accent); }
