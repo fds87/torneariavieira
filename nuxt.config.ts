@@ -1,4 +1,6 @@
 export default defineNuxtConfig({
+  srcDir: 'app/',
+  components: [{ path: '~/components', pathPrefix: false }],
   css: ['~/assets/css/main.css'],
   app: {
     head: {
