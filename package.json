@@ -2,16 +2,27 @@
   "name": "torneariavieira",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
+  "workspaces": ["apps/*"],
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
   "scripts": {
-    "dev": "nuxt dev",
-    "build": "nuxt build",
-    "preview": "nuxt preview",
-    "generate": "nuxt generate"
+    "dev": "npm-run-all2 --parallel dev:api dev:web",
+    "dev:web": "npm run dev -w @tv/web",
+    "dev:api": "npm run dev -w @tv/api",
+    "build": "npm run build -w @tv/web",
+    "lint": "eslint .",
+    "format": "prettier --write ."
   },
-  "dependencies": {
-    "gsap": "^3.14.2",
-    "nuxt": "^4.3.0"
-  },
-  "devDependencies": {}
-
+  "devDependencies": {
+    "@tsconfig/node24": "^24.0.4",
+    "@types/node": "^24.12.0",
+    "@vue/eslint-config-typescript": "^14.7.0",
+    "eslint": "^10.0.3",
+    "eslint-config-prettier": "^10.1.8",
+    "npm-run-all2": "^8.0.4",
+    "prettier": "3.8.1",
+    "typescript": "~5.9.3"
+  }
 }

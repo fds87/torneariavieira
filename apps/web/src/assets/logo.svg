@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 200" width="640" height="200" role="img" aria-label="Brasa Premium">
+  <defs>
+    
+    <linearGradient id="fg-main" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0%" stop-color="#7c2a0a"></stop>
+      <stop offset="35%" stop-color="#d96417"></stop>
+      <stop offset="72%" stop-color="#f08a3f"></stop>
+      <stop offset="100%" stop-color="#fde68a"></stop>
+    </linearGradient>
+    <linearGradient id="fg-inner" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0%" stop-color="#d96417"></stop>
+      <stop offset="60%" stop-color="#fde68a"></stop>
+      <stop offset="100%" stop-color="#ffffff"></stop>
+    </linearGradient>
+    <radialGradient id="fg-glow" cx="50%" cy="85%" r="50%">
+      <stop offset="0%" stop-color="#d96417" stop-opacity="0.55"></stop>
+      <stop offset="100%" stop-color="#d96417" stop-opacity="0"></stop>
+    </radialGradient>
+    <filter id="f-blur" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="3"></feGaussianBlur>
+    </filter>
+  </defs>
+
+  
+  <ellipse cx="74" cy="175" rx="36" ry="14" fill="url(#fg-glow)" filter="url(#f-blur)"></ellipse>
+
+  
+  <path d="M 74 20 C 82 36 96 50 98 68 C 100 82 96 92 92 100 C 104 90 108 76 104 60 C 112 74 110 94 100 108 C 108 100 112 86 108 72 C 116 90 112 110 102 122 C 94 132 82 138 74 140 C 66 138 54 132 46 122 C 36 110 32 90 40 72 C 36 86 40 100 48 108 C 38 94 36 74 44 60 C 40 76 44 90 56 100 C 52 92 48 82 50 68 C 52 50 66 36 74 20 Z" fill="url(#fg-main)"></path>
+
+  
+  <path d="M 74 44 C 79 56 87 66 88 80 C 89 90 85 98 80 106 C 86 98 88 88 86 78 C 91 88 89 100 82 110 C 78 118 74 122 74 122 C 74 122 70 118 66 110 C 59 100 57 88 62 78 C 60 88 62 98 68 106 C 63 98 59 90 60 80 C 61 66 69 56 74 44 Z" fill="url(#fg-inner)" opacity="0.85"></path>
+
+  
+  <ellipse cx="74" cy="118" rx="6" ry="5" fill="#fef3c7" opacity="0.9"></ellipse>
+
+  
+  <text x="148" y="112" class="bp-word">BRASA</text>
+  <text x="478" y="112" class="bp-word">PREMIUM</text>
+
+  
+  <line x1="148" y1="126" x2="688" y2="126" stroke="#eeeae2" stroke-opacity="0.12" stroke-width="0.8"></line>
+
+  
+  <text x="150" y="148" class="bp-tag">Do aço inox ao ritual</text>
+</svg>

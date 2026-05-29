@@ -1,0 +1,141 @@
+/*
+ * Tornearia Vieira — Token Bridge
+ *
+ * Os tokens abaixo mapeiam o vocabulário da Brasa Premium para os tokens
+ * nativos do design system Tornearia Vieira, sem sobrescrever nenhum token
+ * existente em app/assets/css/main.css.
+ *
+ * Regras:
+ *  - Tokens TV (--c-bg, --c-accent, etc.) são a fonte da verdade.
+ *  - Aliases aqui permitem que componentes migrados usem var(--accent), var(--bg), etc.
+ *  - Dark mode é controlado via classe .dark no <html> (useTheme.js existente).
+ */
+
+:root {
+  /* ── Semânticos (usados pelos componentes BP migrados) ── */
+  --bg:           var(--c-bg);
+  --bg-alt:       var(--c-surface);
+  --bg-card:      var(--c-surface);
+  --bg-card-hover:var(--c-surface2);
+  --border:       var(--c-border);
+  --border-hover: var(--c-accent);
+  --text:         var(--c-text);
+  --text-muted:   var(--c-muted);
+  --text-heading: var(--c-text);
+  --accent:       var(--c-accent);
+  --accent-hover: #9A7818;
+
+  /* ── Sistema de tipografia ── */
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-body:    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono:    'JetBrains Mono', 'Fira Code', monospace;
+
+  /* ── Espaçamento ── */
+  --space-xs:  0.5rem;
+  --space-sm:  1rem;
+  --space-md:  1.5rem;
+  --space-lg:  3rem;
+  --space-xl:  5rem;
+  --space-2xl: 8rem;
+  --space-3xl: 12rem;
+
+  /* ── Radius ── */
+  --radius-sm:   4px;
+  --radius-md:   8px;
+  --radius-lg:   16px;
+  --radius-xl:   24px;
+  --radius-full: 9999px;
+
+  /* ── Sombras ── */
+  --shadow-sm:   0 1px 3px rgba(0, 0, 0, 0.12);
+  --shadow-md:   0 4px 24px rgba(0, 0, 0, 0.15);
+  --shadow-lg:   0 12px 48px rgba(0, 0, 0, 0.2);
+  --shadow-gold: 0 4px 30px rgba(184, 146, 30, 0.2);
+
+  /* ── Transições ── */
+  --ease:          cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out:      cubic-bezier(0, 0, 0.2, 1);
+  --ease-spring:   cubic-bezier(0.34, 1.56, 0.64, 1);
+  --duration-fast: 150ms;
+  --duration:      300ms;
+  --duration-slow: 600ms;
+}
+
+:root.dark {
+  --accent-hover: #D9BC87;
+  --shadow-sm:    0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow-md:    0 4px 24px rgba(0, 0, 0, 0.5);
+  --shadow-lg:    0 12px 48px rgba(0, 0, 0, 0.6);
+  --shadow-gold:  0 4px 30px rgba(200, 169, 110, 0.15);
+}
+
+/* ── Container utilitário ── */
+.container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 var(--space-md);
+}
+
+.container--narrow {
+  max-width: 800px;
+}
+
+/* ── Badge ── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: var(--radius-full);
+  background: var(--c-accent);
+  color: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+:root.dark .badge {
+  color: #0A0A0A;
+}
+
+/* ── Inputs ── */
+.input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid var(--c-border);
+  background: var(--c-surface);
+  color: var(--c-text);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  transition: border-color var(--duration) var(--ease);
+  outline: none;
+}
+
+.input:focus {
+  border-color: var(--c-accent);
+  box-shadow: 0 0 0 3px rgba(184, 146, 30, 0.15);
+}
+
+.input::placeholder {
+  color: var(--c-muted);
+}
+
+/* ── Scroll reveal ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition:
+    opacity var(--duration-slow) var(--ease-out),
+    transform var(--duration-slow) var(--ease-out);
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; }
+}
