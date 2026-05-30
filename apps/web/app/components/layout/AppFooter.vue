@@ -4,8 +4,8 @@
       <div class="footer__top">
         <div class="footer__brand">
           <NuxtLink to="/" class="brand" aria-label="Tornearia Vieira">
-            <img class="brand__logo brand__logo--dark" src="/logo-dark.png" alt="Tornearia Vieira" />
-            <img class="brand__logo brand__logo--light" src="/logo.png" alt="" aria-hidden="true" />
+            <img v-show="isDark" class="brand__logo" src="/logo-dark.png" alt="Tornearia Vieira" />
+            <img v-show="!isDark" class="brand__logo" src="/logo.png" alt="" aria-hidden="true" />
           </NuxtLink>
           <p>Precisão em usinagem e fabricação de peças industriais sob desenho. {{ site.location }}.</p>
         </div>
@@ -37,6 +37,7 @@
 
 <script setup>
 import { site } from '~/data/content.js'
+const { isDark } = useTheme()
 const year = new Date().getFullYear()
 </script>
 
@@ -44,9 +45,6 @@ const year = new Date().getFullYear()
 .footer { background: var(--c-bg2); border-top: 1px solid var(--c-border); padding: 80px 0 0; position: relative; overflow: hidden; }
 .brand { display: flex; align-items: center; margin-bottom: 22px; }
 .brand__logo { height: 42px; width: auto; }
-.brand__logo--light { display: none; }
-:global(:root:not(.dark)) .brand__logo--dark { display: none; }
-:global(:root:not(.dark)) .brand__logo--light { display: block; }
 .footer__top { display: grid; grid-template-columns: 1fr; gap: 48px; padding-bottom: 56px; border-bottom: 1px solid var(--c-border); }
 @media (min-width: 860px){ .footer__top { grid-template-columns: 1.6fr 1fr 1fr; } }
 .footer__brand p { color: var(--c-muted); max-width: 320px; font-size: 0.95rem; }

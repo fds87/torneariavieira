@@ -2,8 +2,8 @@
   <header class="hdr" :class="{ scrolled }">
     <div class="hdr__in">
       <NuxtLink to="/" class="brand" aria-label="Tornearia Vieira">
-        <img class="brand__logo brand__logo--dark" src="/logo-dark.png" alt="Tornearia Vieira" />
-        <img class="brand__logo brand__logo--light" src="/logo.png" alt="" aria-hidden="true" />
+        <img v-show="isDark" class="brand__logo" src="/logo-dark.png" alt="Tornearia Vieira" />
+        <img v-show="!isDark" class="brand__logo" src="/logo.png" alt="" aria-hidden="true" />
       </NuxtLink>
 
       <!-- Nav desktop -->
@@ -112,9 +112,6 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
 .brand { display: flex; align-items: center; }
 .brand__logo { height: 38px; width: auto; transition: height 0.4s; }
 .hdr.scrolled .brand__logo { height: 32px; }
-.brand__logo--light { display: none; }
-:global(:root:not(.dark)) .brand__logo--dark { display: none; }
-:global(:root:not(.dark)) .brand__logo--light { display: block; }
 
 .nav { display: none; align-items: center; gap: 30px; }
 @media (min-width: 940px){ .nav { display: flex; } }
