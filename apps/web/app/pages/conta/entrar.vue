@@ -7,10 +7,26 @@ const auth = useAuthStore()
 const router = useRouter()
 const route = useRoute()
 
+const step = ref<'email' | 'password'>('email')
 const email = ref('')
 const password = ref('')
 
+function goToPassword() {
+  auth.error = null
+  step.value = 'password'
+}
+
+function backToEmail() {
+  auth.error = null
+  password.value = ''
+  step.value = 'email'
+}
+
 async function onSubmit() {
+  if (step.value === 'email') {
+    goToPassword()
+    return
+  }
   const ok = await auth.login({ email: email.value, password: password.value })
   if (ok) {
     const raw = route.query.redirect as string
@@ -45,23 +61,59 @@ async function onSubmit() {
         <h1 class="authp__title font-display">ACESSE SUA CONTA</h1>
 
         <form class="authp__form" @submit.prevent="onSubmit">
-          <div class="field">
-            <label class="field__label">E-mail</label>
-            <input v-model="email" class="field__input" type="email" placeholder="seu@email.com" required autocomplete="email" />
-          </div>
-          <div class="field">
-            <div class="field-header">
-              <label class="field__label">Senha</label>
-              <RouterLink to="/conta/recuperar-senha" class="authp__forgot mono">Esqueceu?</RouterLink>
+
+          <!-- PASSO 1 — e-mail -->
+          <template v-if="step === 'email'">
+            <div class="field">
+              <label class="field__label">E-mail</label>
+              <input
+                v-model="email"
+                class="field__input"
+                type="email"
+                placeholder="seu@email.com"
+                required
+                autocomplete="email"
+                autofocus
+              />
             </div>
-            <input v-model="password" class="field__input" type="password" placeholder="Sua senha" required autocomplete="current-password" />
-          </div>
+            <button type="submit" class="btn btn--gold authp__submit">
+              Continuar <span class="arrow">→</span>
+            </button>
+          </template>
 
-          <p v-if="auth.error" class="authp__error mono">{{ auth.error }}</p>
+          <!-- PASSO 2 — senha -->
+          <template v-else>
+            <div class="field">
+              <label class="field__label">E-mail</label>
+              <div class="email-row">
+                <span class="email-val">{{ email }}</span>
+                <button type="button" class="authp__change mono" @click="backToEmail">Trocar</button>
+              </div>
+            </div>
 
-          <button type="submit" class="btn btn--gold authp__submit" :disabled="auth.loading">
-            {{ auth.loading ? 'Entrando…' : 'Entrar' }} <span class="arrow">→</span>
-          </button>
+            <div class="field">
+              <div class="field-header">
+                <label class="field__label">Senha</label>
+                <RouterLink to="/conta/recuperar-senha" class="authp__forgot mono">Esqueceu?</RouterLink>
+              </div>
+              <input
+                v-model="password"
+                class="field__input"
+                type="password"
+                placeholder="Sua senha"
+                required
+                autocomplete="current-password"
+                autofocus
+              />
+            </div>
+
+            <p v-if="auth.error" class="authp__error mono">{{ auth.error }}</p>
+
+            <button type="submit" class="btn btn--gold authp__submit" :disabled="auth.loading">
+              {{ auth.loading ? 'Entrando…' : 'Entrar' }} <span class="arrow">→</span>
+            </button>
+          </template>
+
         </form>
 
         <p class="authp__footer mono">
@@ -93,6 +145,12 @@ async function onSubmit() {
 .authp__form { display: flex; flex-direction: column; gap: 18px; }
 .field { display: flex; flex-direction: column; gap: 8px; }
 .field-header { display: flex; justify-content: space-between; align-items: center; }
+
+.email-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 14px; border: 1px solid var(--c-border); background: var(--c-bg2); }
+.email-val { font-size: 0.9rem; color: var(--c-text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.authp__change { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--c-accent); transition: color 0.2s; flex-shrink: 0; }
+.authp__change:hover { color: var(--c-accent-2); text-decoration: underline; text-underline-offset: 3px; }
+
 .authp__forgot { font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--c-muted); transition: color 0.2s; }
 .authp__forgot:hover { color: var(--c-accent); }
 .authp__error { font-size: 0.7rem; color: #ef4444; letter-spacing: 0.04em; }
