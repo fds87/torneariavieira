@@ -2,8 +2,8 @@
   <header class="hdr" :class="{ scrolled }">
     <div class="hdr__in">
       <NuxtLink to="/" class="brand" aria-label="Tornearia Vieira">
-        <img class="brand__logo brand__logo--dark" src="/logo.png" alt="Tornearia Vieira" />
-        <img class="brand__logo brand__logo--light" src="/logo-dark.png" alt="" aria-hidden="true" />
+        <img class="brand__logo brand__logo--dark" src="/logo-dark.png" alt="Tornearia Vieira" />
+        <img class="brand__logo brand__logo--light" src="/logo.png" alt="" aria-hidden="true" />
       </NuxtLink>
 
       <!-- Nav desktop -->
