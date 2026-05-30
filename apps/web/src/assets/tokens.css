@@ -1,33 +1,52 @@
 /*
- * Tornearia Vieira — Token Bridge
+ * Tornearia Vieira — Token Bridge (redesign 2026)
  *
- * Os tokens abaixo mapeiam o vocabulário da Brasa Premium para os tokens
- * nativos do design system Tornearia Vieira, sem sobrescrever nenhum token
- * existente em app/assets/css/main.css.
+ * Mapeia o vocabulário legado para os tokens nativos definidos em
+ * app/assets/css/main.css (que é a fonte da verdade). Carregado DEPOIS
+ * do main.css — então as páginas internas migradas (checkout, conta,
+ * admin, pagamento, pedido) adotam a paleta/tipografia nova automaticamente.
  *
- * Regras:
- *  - Tokens TV (--c-bg, --c-accent, etc.) são a fonte da verdade.
- *  - Aliases aqui permitem que componentes migrados usem var(--accent), var(--bg), etc.
- *  - Dark mode é controlado via classe .dark no <html> (useTheme.js existente).
+ * Tema: classe .dark no <html> (useTheme.js). Default = DARK.
  */
 
 :root {
-  /* ── Semânticos (usados pelos componentes BP migrados) ── */
-  --bg:           var(--c-bg);
-  --bg-alt:       var(--c-surface);
-  --bg-card:      var(--c-surface);
-  --bg-card-hover:var(--c-surface2);
-  --border:       var(--c-border);
-  --border-hover: var(--c-accent);
-  --text:         var(--c-text);
-  --text-muted:   var(--c-muted);
-  --text-heading: var(--c-text);
-  --accent:       var(--c-accent);
-  --accent-hover: #9A7818;
+  /* ── Stone scale (aliases) ── */
+  --c-stone-50:  var(--c-text);
+  --c-stone-100: var(--c-text);
+  --c-stone-200: var(--c-muted);
+  --c-stone-300: var(--c-muted);
+  --c-stone-400: var(--c-muted);
+  --c-stone-500: var(--c-faint);
+  --c-stone-600: var(--c-faint);
+  --c-stone-800: var(--c-surface2);
+  --c-stone-900: var(--c-surface);
+  --c-stone-950: var(--c-bg2);
 
-  /* ── Sistema de tipografia ── */
+  /* ── Legacy Brasa Premium ── */
+  --c-ivory:      var(--c-text);
+  --c-ivory-dim:  var(--c-muted);
+  --c-ivory-mute: var(--c-muted);
+  --c-ember:      var(--c-accent);
+  --c-hair:       var(--c-border);
+  --c-hair-bold:  var(--c-border-2);
+  --c-ink:        var(--c-bg);
+
+  /* ── Semânticos ── */
+  --bg:            var(--c-bg);
+  --bg-alt:        var(--c-surface);
+  --bg-card:       var(--c-surface);
+  --bg-card-hover: var(--c-surface2);
+  --border:        var(--c-border);
+  --border-hover:  var(--c-accent);
+  --text:          var(--c-text);
+  --text-muted:    var(--c-muted);
+  --text-heading:  var(--c-text);
+  --accent:        var(--c-accent);
+  --accent-hover:  var(--c-accent-2);
+
+  /* ── Tipografia (alinhada ao main.css) ── */
   --font-display: 'Bebas Neue', sans-serif;
-  --font-body:    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-body:    'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-mono:    'JetBrains Mono', 'Fira Code', monospace;
 
   /* ── Espaçamento ── */
@@ -39,30 +58,29 @@
   --space-2xl: 8rem;
   --space-3xl: 12rem;
 
-  /* ── Radius ── */
-  --radius-sm:   4px;
-  --radius-md:   8px;
-  --radius-lg:   16px;
-  --radius-xl:   24px;
+  /* ── Radius (industrial = cantos retos) ── */
+  --radius-sm:   0px;
+  --radius-md:   0px;
+  --radius-lg:   0px;
+  --radius-xl:   0px;
   --radius-full: 9999px;
 
   /* ── Sombras ── */
   --shadow-sm:   0 1px 3px rgba(0, 0, 0, 0.12);
   --shadow-md:   0 4px 24px rgba(0, 0, 0, 0.15);
   --shadow-lg:   0 12px 48px rgba(0, 0, 0, 0.2);
-  --shadow-gold: 0 4px 30px rgba(184, 146, 30, 0.2);
+  --shadow-gold: 0 4px 30px rgba(168, 132, 26, 0.2);
 
   /* ── Transições ── */
   --ease:          cubic-bezier(0.4, 0, 0.2, 1);
-  --ease-out:      cubic-bezier(0, 0, 0.2, 1);
-  --ease-spring:   cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-out:      cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring:   cubic-bezier(0.34, 1.4, 0.5, 1);
   --duration-fast: 150ms;
   --duration:      300ms;
   --duration-slow: 600ms;
 }
 
 :root.dark {
-  --accent-hover: #D9BC87;
   --shadow-sm:    0 1px 3px rgba(0, 0, 0, 0.4);
   --shadow-md:    0 4px 24px rgba(0, 0, 0, 0.5);
   --shadow-lg:    0 12px 48px rgba(0, 0, 0, 0.6);
@@ -70,72 +88,70 @@
 }
 
 /* ── Container utilitário ── */
-.container {
-  width: 100%;
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 0 var(--space-md);
-}
-
-.container--narrow {
-  max-width: 800px;
-}
+.container { width: 100%; max-width: 1280px; margin: 0 auto; padding: 0 var(--space-md); }
+.container--narrow { max-width: 800px; }
 
 /* ── Badge ── */
 .badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 20px;
-  height: 20px;
-  padding: 0 6px;
-  border-radius: var(--radius-full);
-  background: var(--c-accent);
-  color: #ffffff;
-  font-size: 0.7rem;
-  font-weight: 700;
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 20px; height: 20px; padding: 0 6px; border-radius: var(--radius-full);
+  background: var(--c-accent); color: #fff; font-size: 0.7rem; font-weight: 700;
 }
-
-:root.dark .badge {
-  color: #0A0A0A;
-}
+:root.dark .badge { color: #0A0A0A; }
 
 /* ── Inputs ── */
 .input {
-  width: 100%;
-  padding: 12px 16px;
-  border: 1px solid var(--c-border);
-  background: var(--c-surface);
-  color: var(--c-text);
-  font-family: var(--font-body);
-  font-size: 0.9rem;
-  transition: border-color var(--duration) var(--ease);
+  width: 100%; padding: 12px 16px;
+  border: 1px solid var(--c-border); background: var(--c-surface); color: var(--c-text);
+  font-family: var(--font-body); font-size: 0.9rem;
+  transition: border-color var(--duration) var(--ease), box-shadow var(--duration) var(--ease);
   outline: none;
 }
+.input:focus { border-color: var(--c-accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--c-accent) 14%, transparent); }
+.input::placeholder { color: var(--c-muted); }
 
-.input:focus {
-  border-color: var(--c-accent);
-  box-shadow: 0 0 0 3px rgba(184, 146, 30, 0.15);
+/* ── Scroll reveal (legado — algumas pages usam .visible) ── */
+.reveal { opacity: 0; transform: translateY(40px); transition: opacity var(--duration-slow) var(--ease-out), transform var(--duration-slow) var(--ease-out); }
+.reveal.visible, .reveal.in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce){ .reveal { opacity: 1; transform: none; } }
+
+/* ── Inputs migrados (.field__input) ── */
+.field__input,
+.field__input[type="text"], .field__input[type="email"], .field__input[type="password"],
+.field__input[type="tel"], .field__input[type="number"],
+textarea.field__input, select.field__input {
+  background: var(--c-surface); border: 1px solid var(--c-border); color: var(--c-text);
+  font-family: var(--font-body); font-size: 0.9rem; padding: 12px 16px; border-radius: 0;
+  outline: none; transition: border-color var(--duration) var(--ease), box-shadow var(--duration) var(--ease);
+  width: 100%; -webkit-appearance: none; appearance: none;
+}
+.field__input::placeholder { color: var(--c-muted); opacity: 0.6; }
+.field__input:focus { border-color: var(--c-accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--c-accent) 14%, transparent); }
+.field__label {
+  font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.15em;
+  text-transform: uppercase; color: var(--c-muted);
 }
 
-.input::placeholder {
-  color: var(--c-muted);
+/* ── btn--primary (chanfrado, igual ao .btn--gold do main.css) ── */
+.btn--primary {
+  --chamfer: 9px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  background: var(--c-accent); color: #fff;
+  font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase;
+  padding: 15px 32px; border: none; cursor: pointer; text-decoration: none;
+  clip-path: polygon(var(--chamfer) 0, 100% 0, 100% calc(100% - var(--chamfer)), calc(100% - var(--chamfer)) 100%, 0 100%, 0 var(--chamfer));
+  transition: background var(--duration-fast) var(--ease);
 }
+.btn--primary:hover:not(:disabled) { background: var(--c-accent-2); }
+.btn--primary:disabled { opacity: 0.5; cursor: not-allowed; }
+:root.dark .btn--primary { color: #0A0A0A; }
 
-/* ── Scroll reveal ── */
-.reveal {
-  opacity: 0;
-  transform: translateY(40px);
-  transition:
-    opacity var(--duration-slow) var(--ease-out),
-    transform var(--duration-slow) var(--ease-out);
+/* ── btn--secondary / outline (legado) ── */
+.btn--secondary, .btn--outline {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  background: transparent; color: var(--c-text);
+  font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase;
+  padding: 14px 30px; border: 1px solid var(--c-border-2); cursor: pointer; text-decoration: none;
+  transition: border-color var(--duration-fast) var(--ease), color var(--duration-fast) var(--ease);
 }
-
-.reveal.visible {
-  opacity: 1;
-  transform: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .reveal { opacity: 1; transform: none; }
-}
+.btn--secondary:hover, .btn--outline:hover { border-color: var(--c-accent); color: var(--c-accent); }

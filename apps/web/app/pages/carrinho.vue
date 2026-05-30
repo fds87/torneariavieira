@@ -20,340 +20,132 @@ const totalWithFreight = computed(
 onMounted(() => {
   if (cart.items.length === 0) return
   trackEvent('view_cart', {
-    currency: 'BRL',
-    value: cart.totalAmount,
-    items: cart.items.map(i => ({
-      item_id: String(i.productId),
-      item_name: i.name,
-      price: i.price,
-      quantity: i.quantity,
-    })),
+    currency: 'BRL', value: cart.totalAmount,
+    items: cart.items.map(i => ({ item_id: String(i.productId), item_name: i.name, price: i.price, quantity: i.quantity })),
   })
 })
 
 function removeItem(productId: number, name: string, price: number) {
-  trackEvent('remove_from_cart', {
-    currency: 'BRL',
-    value: price,
-    items: [{ item_id: String(productId), item_name: name, price, quantity: 1 }],
-  })
+  trackEvent('remove_from_cart', { currency: 'BRL', value: price, items: [{ item_id: String(productId), item_name: name, price, quantity: 1 }] })
   cart.removeItem(productId)
 }
 
 function goToCheckout() {
   trackEvent('begin_checkout', {
-    currency: 'BRL',
-    value: totalWithFreight.value,
-    items: cart.items.map(i => ({
-      item_id: String(i.productId),
-      item_name: i.name,
-      price: i.price,
-      quantity: i.quantity,
-    })),
+    currency: 'BRL', value: totalWithFreight.value,
+    items: cart.items.map(i => ({ item_id: String(i.productId), item_name: i.name, price: i.price, quantity: i.quantity })),
   })
-  if (!auth.isLoggedIn) {
-    router.push('/conta/entrar?redirect=/checkout')
-    return
-  }
+  if (!auth.isLoggedIn) { router.push('/conta/entrar?redirect=/checkout'); return }
   router.push('/checkout')
 }
 </script>
 
 <template>
-  <main class="container cart-page">
-    <h1 class="page-title">Carrinho</h1>
-
-    <div v-if="cart.items.length === 0" class="empty-cart">
-      <p>Seu carrinho está vazio.</p>
-      <RouterLink to="/" class="btn btn--primary">Ver Produtos</RouterLink>
-    </div>
-
-    <div v-else class="cart-layout">
-      <div class="cart-main">
-        <!-- Items -->
-        <div class="cart-items">
-          <div v-for="item in cart.items" :key="item.productId" class="cart-item">
-            <RouterLink :to="`/produto/${item.slug}`" class="item-thumb">
-              <img v-if="item.imageUrl" :src="item.imageUrl" :alt="item.name" class="item-thumb-img" />
-              <div v-else class="item-thumb-placeholder" />
-            </RouterLink>
-            <div class="item-info">
-              <RouterLink :to="`/produto/${item.slug}`" class="item-name">
-                {{ item.name }}
-              </RouterLink>
-              <span class="item-price">{{ formatPrice(item.price) }} /un</span>
-            </div>
-
-            <div class="item-controls">
-              <div class="quantity-control">
-                <button
-                  class="qty-btn"
-                  @click="cart.updateQuantity(item.productId, item.quantity - 1)"
-                >
-                  -
-                </button>
-                <span class="qty-value">{{ item.quantity }}</span>
-                <button
-                  class="qty-btn"
-                  @click="cart.updateQuantity(item.productId, item.quantity + 1)"
-                >
-                  +
-                </button>
-              </div>
-              <span class="item-subtotal">{{ formatPrice(item.price * item.quantity) }}</span>
-              <button class="remove-btn" @click="removeItem(item.productId, item.name, item.price)">&times;</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Freight Calculator -->
-        <FreightCalculator :items="cart.items.map(i => ({ productId: i.productId, quantity: i.quantity }))" />
+  <main class="cartp">
+    <div class="grid-layer cartp__grid"></div>
+    <div class="shell cartp__inner">
+      <div class="cartp__head">
+        <span class="eyebrow"><b>//</b> Carrinho <span class="ln"></span></span>
+        <h1 class="cartp__title font-display">SEU <span class="gold">PEDIDO</span></h1>
       </div>
 
-      <!-- Sticky Summary Sidebar -->
-      <div class="cart-summary">
-        <div class="summary-row">
-          <span>Itens ({{ cart.totalItems }})</span>
-          <span>{{ formatPrice(cart.totalAmount) }}</span>
+      <div v-if="cart.items.length === 0" class="cartp__empty">
+        <div class="cartp__empty-ic">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        </div>
+        <p class="mono">Seu carrinho está vazio.</p>
+        <RouterLink to="/catalogo" class="btn btn--gold" data-magnetic>Ver Catálogo <span class="arrow">→</span></RouterLink>
+      </div>
+
+      <div v-else class="cartp__layout">
+        <div class="cartp__main">
+          <div class="cartp__items">
+            <div v-for="item in cart.items" :key="item.productId" class="citem">
+              <RouterLink :to="`/produto/${item.slug}`" class="citem__thumb">
+                <img v-if="item.imageUrl" :src="item.imageUrl" :alt="item.name" />
+                <div v-else class="citem__ph">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/></svg>
+                </div>
+              </RouterLink>
+              <div class="citem__info">
+                <RouterLink :to="`/produto/${item.slug}`" class="citem__name font-display">{{ item.name }}</RouterLink>
+                <span class="citem__price mono">{{ formatPrice(item.price) }} / un</span>
+              </div>
+              <div class="citem__controls">
+                <div class="citem__qty">
+                  <button class="citem__qty-btn" @click="cart.updateQuantity(item.productId, item.quantity - 1)">−</button>
+                  <span class="citem__qty-val mono">{{ item.quantity }}</span>
+                  <button class="citem__qty-btn" @click="cart.updateQuantity(item.productId, item.quantity + 1)">+</button>
+                </div>
+                <span class="citem__sub font-display">{{ formatPrice(item.price * item.quantity) }}</span>
+                <button class="citem__rm" @click="removeItem(item.productId, item.name, item.price)" aria-label="Remover">&times;</button>
+              </div>
+            </div>
+          </div>
+
+          <FreightCalculator :items="cart.items.map(i => ({ productId: i.productId, quantity: i.quantity }))" />
         </div>
 
-        <div v-if="freight.selected" class="summary-row">
-          <span>Frete ({{ freight.selected.service }})</span>
-          <span>{{ formatPrice(freight.selected.price) }}</span>
-        </div>
-        <div v-else class="summary-row summary-row--muted">
-          <span>Frete</span>
-          <span>Calcule abaixo</span>
-        </div>
-
-        <div class="summary-total">
-          <span>Total</span>
-          <span class="total-value">{{ formatPrice(totalWithFreight) }}</span>
-        </div>
-
-        <button class="btn btn--primary full-width" @click="goToCheckout">
-          {{ auth.isLoggedIn ? 'Ir para Pagamento' : 'Entrar para Comprar' }}
-        </button>
-        <RouterLink to="/" class="continue-link">Continuar comprando</RouterLink>
+        <aside class="cartp__summary">
+          <div class="cartp__summary-label mono">// Resumo</div>
+          <div class="srow"><span>Itens ({{ cart.totalItems }})</span><span>{{ formatPrice(cart.totalAmount) }}</span></div>
+          <div v-if="freight.selected" class="srow"><span>Frete ({{ freight.selected.service }})</span><span>{{ formatPrice(freight.selected.price) }}</span></div>
+          <div v-else class="srow srow--muted"><span>Frete</span><span>Calcule ao lado</span></div>
+          <div class="stotal"><span>Total</span><span class="stotal__v font-display">{{ formatPrice(totalWithFreight) }}</span></div>
+          <button class="btn btn--gold cartp__checkout" @click="goToCheckout">{{ auth.isLoggedIn ? 'Ir para Pagamento' : 'Entrar para Comprar' }} <span class="arrow">→</span></button>
+          <RouterLink to="/catalogo" class="cartp__continue mono">← Continuar comprando</RouterLink>
+        </aside>
       </div>
     </div>
   </main>
 </template>
 
 <style scoped>
-.cart-page {
-  padding: 6rem 1.5rem 4rem;
-}
+.cartp { position: relative; min-height: 100vh; background: var(--c-bg); padding: 116px 0 80px; overflow: hidden; }
+.cartp__grid { opacity: 0.5; }
+.cartp__inner { position: relative; z-index: 1; }
+.cartp__head { margin-bottom: 44px; }
+.cartp__title { font-size: clamp(2.4rem, 6vw, 4.5rem); line-height: 0.9; letter-spacing: 0.02em; margin-top: 14px; }
 
-.page-title {
-  font-family: var(--font-display);
-  font-size: 1.8rem;
-  font-weight: 600;
-  color: var(--c-stone-50);
-  margin-bottom: 2rem;
-}
+.cartp__empty { display: flex; flex-direction: column; align-items: center; gap: 22px; padding: 70px 0; border: 1px solid var(--c-border); background: var(--c-surface); }
+.cartp__empty-ic { width: 76px; height: 76px; border: 1px solid var(--c-border-2); display: grid; place-items: center; color: var(--c-accent); }
+.cartp__empty p { color: var(--c-muted); letter-spacing: 0.1em; text-transform: uppercase; font-size: 0.72rem; }
 
-.empty-cart {
-  text-align: center;
-  padding: 4rem 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.5rem;
-  color: var(--text-muted);
-}
+.cartp__layout { display: grid; grid-template-columns: 1fr; gap: 28px; align-items: start; }
+@media (min-width: 940px){ .cartp__layout { grid-template-columns: 1fr 340px; gap: 32px; } }
+.cartp__main { display: flex; flex-direction: column; gap: 28px; }
+.cartp__items { border-top: 1px solid var(--c-border); }
 
-.cart-layout {
-  display: grid;
-  grid-template-columns: 1fr 340px;
-  gap: 2rem;
-  align-items: start;
-}
+.citem { display: flex; align-items: center; gap: 18px; padding: 20px 0; border-bottom: 1px solid var(--c-border); }
+.citem__thumb { flex-shrink: 0; width: 76px; height: 76px; border: 1px solid var(--c-border); background: var(--c-surface); display: grid; place-items: center; overflow: hidden; }
+.citem__thumb img { width: 100%; height: 100%; object-fit: contain; padding: 8px; }
+.citem__ph { color: var(--c-faint); }
+.citem__info { flex: 1; min-width: 0; }
+.citem__name { display: block; font-size: 1.3rem; letter-spacing: 0.02em; color: var(--c-text); line-height: 1; transition: color 0.2s; }
+.citem__name:hover { color: var(--c-accent); }
+.citem__price { display: block; font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--c-muted); margin-top: 8px; }
+.citem__controls { display: flex; align-items: center; gap: 18px; }
+.citem__qty { display: flex; align-items: center; border: 1px solid var(--c-border-2); }
+.citem__qty-btn { width: 34px; height: 38px; color: var(--c-text); font-size: 1rem; display: grid; place-items: center; transition: background 0.2s; }
+.citem__qty-btn:hover { background: var(--c-surface2); }
+.citem__qty-val { width: 38px; text-align: center; font-size: 0.78rem; color: var(--c-text); line-height: 38px; border-left: 1px solid var(--c-border-2); border-right: 1px solid var(--c-border-2); }
+.citem__sub { min-width: 92px; text-align: right; font-size: 1.3rem; color: var(--c-accent); letter-spacing: 0.02em; }
+.citem__rm { color: var(--c-faint); font-size: 1.5rem; line-height: 1; padding: 0 4px; transition: color 0.2s; }
+.citem__rm:hover { color: #ef4444; }
 
-.cart-main {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
+.cartp__summary { border: 1px solid var(--c-border); background: var(--c-surface); padding: 28px 24px; position: sticky; top: 96px; }
+.cartp__summary-label { font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--c-accent); margin-bottom: 22px; }
+.srow { display: flex; justify-content: space-between; font-size: 0.82rem; color: var(--c-muted); padding-bottom: 14px; margin-bottom: 14px; border-bottom: 1px solid var(--c-border); }
+.srow--muted span:last-child { font-style: italic; font-size: 0.76rem; }
+.stotal { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+.stotal span:first-child { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--c-text); }
+.stotal__v { font-size: 1.9rem; color: var(--c-accent); letter-spacing: 0.02em; }
+.cartp__checkout { width: 100%; justify-content: center; }
+.cartp__continue { display: block; text-align: center; margin-top: 16px; color: var(--c-muted); font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; transition: color 0.2s; }
+.cartp__continue:hover { color: var(--c-accent); }
 
-.cart-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-  padding: 1.25rem;
-  background: var(--bg-card);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border);
-  margin-bottom: 0.75rem;
-}
-
-.item-thumb {
-  flex-shrink: 0;
-  width: 64px;
-  height: 64px;
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-  background: var(--c-stone-900);
-}
-
-.item-thumb-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.item-thumb-placeholder {
-  width: 100%;
-  height: 100%;
-  background: var(--c-stone-800);
-}
-
-.item-name {
-  font-weight: 600;
-  color: var(--c-stone-100);
-  text-decoration: none;
-  transition: color var(--duration-fast) var(--ease);
-}
-
-.item-name:hover {
-  color: var(--accent);
-}
-
-.item-price {
-  display: block;
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  margin-top: 0.25rem;
-}
-
-.item-controls {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.quantity-control {
-  display: flex;
-  align-items: center;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  overflow: hidden;
-}
-
-.qty-btn {
-  background: var(--bg-card);
-  border: none;
-  color: var(--c-stone-100);
-  width: 36px;
-  height: 36px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background var(--duration-fast) var(--ease);
-}
-
-.qty-btn:hover {
-  background: var(--c-stone-900);
-}
-
-.qty-value {
-  width: 36px;
-  text-align: center;
-  font-weight: 600;
-  color: var(--c-stone-100);
-  font-size: 0.9rem;
-}
-
-.item-subtotal {
-  font-weight: 600;
-  color: var(--accent);
-  min-width: 90px;
-  text-align: right;
-}
-
-.remove-btn {
-  background: none;
-  border: none;
-  color: var(--c-stone-500);
-  font-size: 1.4rem;
-  padding: 0 0.25rem;
-  cursor: pointer;
-  transition: color var(--duration-fast) var(--ease);
-}
-
-.remove-btn:hover {
-  color: var(--c-red, #ef4444);
-}
-
-/* Sidebar */
-.cart-summary {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 1.5rem;
-  position: sticky;
-  top: 96px;
-}
-
-.summary-row {
-  display: flex;
-  justify-content: space-between;
-  color: var(--text-muted);
-  font-size: 0.9rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 0.75rem;
-}
-
-.summary-row--muted span:last-child {
-  font-style: italic;
-  font-size: 0.82rem;
-}
-
-.summary-total {
-  display: flex;
-  justify-content: space-between;
-  font-weight: 700;
-  color: var(--c-stone-100);
-  font-size: 1.1rem;
-  margin-bottom: 1.5rem;
-}
-
-.total-value {
-  color: var(--accent);
-}
-
-.full-width {
-  width: 100%;
-}
-
-.continue-link {
-  display: block;
-  text-align: center;
-  margin-top: 1rem;
-  color: var(--text-muted);
-  font-size: 0.9rem;
-  transition: color var(--duration-fast) var(--ease);
-}
-
-.continue-link:hover {
-  color: var(--c-stone-100);
-}
-
-@media (max-width: 768px) {
-  .cart-layout {
-    grid-template-columns: 1fr;
-  }
-
-  .cart-item {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-  }
-
-  .item-controls {
-    width: 100%;
-    justify-content: space-between;
-  }
+@media (max-width: 640px){
+  .citem { flex-wrap: wrap; }
+  .citem__controls { width: 100%; justify-content: space-between; }
 }
 </style>

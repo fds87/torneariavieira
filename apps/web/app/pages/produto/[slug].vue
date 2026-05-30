@@ -12,6 +12,8 @@ const router = useRouter()
 const productStore = useProductStore()
 const cart = useCartStore()
 
+const whatsapp = 'https://wa.me/5541999802662'
+
 const product = ref<Product | null>(null)
 const quantity = ref(1)
 const added = ref(false)
@@ -21,32 +23,29 @@ const isInCart = computed(() =>
   product.value ? cart.items.some((i) => i.productId === product.value!.id) : false,
 )
 
-const categoryLabels: Record<Product['category'], string> = {
-  espeto: 'Espeto',
-  churrasqueira: 'Churrasqueira',
-  grelha: 'Grelha',
-  acessorio: 'Acessório',
-  kit: 'Kit',
+const categoryLabels: Record<string, string> = {
+  injetora: 'Componente p/ Injetora',
+  bucha: 'Bucha',
+  eixo: 'Eixo',
+  conjunto: 'Conjunto Mecânico',
+  mola: 'Mola Usinada',
+  cabecote: 'Cabeçote Angular',
+  peca: 'Peça Usinada',
+  servico: 'Serviço',
+  outros: 'Peça Usinada',
 }
+const catLabel = computed(() => product.value ? (categoryLabels[product.value.category] ?? 'Peça Usinada') : '')
 
-/* Map slugs to product images */
-const productImages: Record<string, string> = {
-  'churrasqueira-rotativa-9': '/churrasqueira-rotativa-9.png',
-  'churrasqueira-imperial':   '/churrasqueira-imperial.png',
-}
-const fallbackImg = 'https://cdn.sistemawbuy.com.br/arquivos/100c580baca8c725f35897c2510dbb91/produtos/MO6DA4/735d68c44e1fc161aed24fc7a78c60c0-6691833bd2395.jpg'
-
-const productImg = computed(() => {
-  if (!product.value) return fallbackImg
-  return productImages[product.value.slug] ?? fallbackImg
-})
+const customMsg = computed(() =>
+  `Olá! Tenho interesse na peça "${product.value?.name ?? ''}". Gostaria de um orçamento sob desenho.`,
+)
 
 onMounted(async () => {
   const rawSlug = route.params.slug
   const slug = Array.isArray(rawSlug) ? rawSlug[0] : rawSlug
   if (!slug) { router.replace('/'); return }
   product.value = await productStore.fetchProduct(slug)
-  if (!product.value) { router.replace('/'); return }
+  if (!product.value) { router.replace('/catalogo'); return }
   trackViewItem({ id: product.value.id, name: product.value.name, price: product.value.price, category: product.value.category })
 })
 
@@ -60,586 +59,173 @@ function addToCart() {
 </script>
 
 <template>
-  <main class="detail" v-if="product">
-    <!-- back -->
-    <div class="detail__nav">
-      <button class="detail__back" @click="router.back()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-        Voltar
-      </button>
-      <nav class="detail__breadcrumb">
-        <RouterLink to="/">Início</RouterLink>
-        <span>/</span>
-        <RouterLink to="/#produtos">Loja</RouterLink>
-        <span>/</span>
-        <span>{{ product.name }}</span>
-      </nav>
-    </div>
-
-    <div class="detail__grid">
-      <!-- ── IMAGE PANEL ── -->
-      <div class="detail__media">
-        <div class="detail__img-wrap">
-          <!-- certificate badge -->
-          <div class="detail__cert">
-            <span class="detail__cert-star">✦</span> Peça única<br/>
-            <span class="detail__cert-sub">série · un. assinada</span>
-          </div>
-
-          <img
-            :src="productImg"
-            :alt="product.name"
-            class="detail__img"
-            :class="{ 'detail__img--loaded': imgLoaded }"
-            @load="imgLoaded = true"
-            loading="eager"
-          />
-
-          <!-- category badge -->
-          <div class="detail__cat-badge">{{ categoryLabels[product.category] }}</div>
-        </div>
-
-        <!-- thumbnails row -->
-        <div class="detail__thumbs">
-          <div class="detail__thumb detail__thumb--active">
-            <img :src="productImg" :alt="product.name" />
-          </div>
-          <div class="detail__thumb detail__thumb--ph">
-            <span>+</span>
-          </div>
-          <div class="detail__thumb detail__thumb--ph">
-            <span>+</span>
-          </div>
-        </div>
+  <main class="pd" v-if="product">
+    <div class="grid-layer pd__grid"></div>
+    <div class="shell pd__inner">
+      <!-- nav -->
+      <div class="pd__nav">
+        <button class="pd__back" @click="router.back()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+          Voltar
+        </button>
+        <nav class="pd__crumb">
+          <RouterLink to="/">Início</RouterLink><span>/</span>
+          <RouterLink to="/catalogo">Catálogo</RouterLink><span>/</span>
+          <span class="pd__crumb-cur">{{ product.name }}</span>
+        </nav>
       </div>
 
-      <!-- ── INFO PANEL ── -->
-      <div class="detail__info">
-        <!-- eyebrow -->
-        <div class="detail__eyebrow">
-          <span class="detail__eyebrow-line" />
-          {{ categoryLabels[product.category] }} · sob medida · exclusivo
-        </div>
-
-        <!-- name -->
-        <h1 class="detail__name">{{ product.name }}</h1>
-
-        <!-- material tag -->
-        <div class="detail__material">{{ product.material }}</div>
-
-        <!-- description -->
-        <p class="detail__desc">{{ product.description }}</p>
-
-        <!-- specs table -->
-        <div class="detail__specs">
-          <div class="detail__spec">
-            <span class="detail__spec-k">Material</span>
-            <span class="detail__spec-v">{{ product.material }}</span>
-          </div>
-          <div class="detail__spec">
-            <span class="detail__spec-k">Fabricação</span>
-            <span class="detail__spec-v">Artesanal · sob encomenda</span>
-          </div>
-          <div class="detail__spec">
-            <span class="detail__spec-k">Garantia</span>
-            <span class="detail__spec-v">5 anos contra defeitos</span>
-          </div>
-          <div class="detail__spec">
-            <span class="detail__spec-k">Prazo</span>
-            <span class="detail__spec-v">30 a 60 dias úteis</span>
-          </div>
-          <div class="detail__spec" v-if="product.inStock">
-            <span class="detail__spec-k">Disponibilidade</span>
-            <span class="detail__spec-v detail__spec-v--avail">Em linha · pronta entrega</span>
-          </div>
-          <div class="detail__spec" v-else>
-            <span class="detail__spec-k">Disponibilidade</span>
-            <span class="detail__spec-v">Sob consulta</span>
-          </div>
-        </div>
-
-        <!-- price -->
-        <div class="detail__price-block" v-if="product.inStock && product.price > 0">
-          <div class="detail__price-label">A partir de</div>
-          <div class="detail__price">{{ formatPrice(product.price) }}</div>
-          <div class="detail__price-sub">ou 12× sem juros · frete a calcular</div>
-        </div>
-        <div class="detail__price-block" v-else>
-          <div class="detail__price-label">Valor</div>
-          <div class="detail__price-consult">Sob consulta</div>
-          <div class="detail__price-sub">Mande sua medida — orçamento em 72h</div>
-        </div>
-
-        <!-- actions -->
-        <div class="detail__actions" v-if="product.inStock">
-          <template v-if="!isInCart">
-            <div class="detail__qty">
-              <button class="detail__qty-btn" @click="quantity = Math.max(1, quantity - 1)">−</button>
-              <span class="detail__qty-val">{{ quantity }}</span>
-              <button class="detail__qty-btn" @click="quantity++">+</button>
+      <div class="pd__grid-main">
+        <!-- MEDIA -->
+        <div class="pd__media">
+          <div class="pd__frame">
+            <svg class="pd__dim" preserveAspectRatio="none" viewBox="0 0 100 100" fill="none" stroke="currentColor" aria-hidden="true">
+              <line x1="7" y1="16" x2="7" y2="84" stroke-width="0.4"/><line x1="4" y1="16" x2="10" y2="16" stroke-width="0.5"/><line x1="4" y1="84" x2="10" y2="84" stroke-width="0.5"/>
+              <line x1="16" y1="92" x2="84" y2="92" stroke-width="0.4"/><line x1="16" y1="89" x2="16" y2="95" stroke-width="0.5"/><line x1="84" y1="89" x2="84" y2="95" stroke-width="0.5"/>
+              <circle cx="84" cy="16" r="8" stroke-width="0.4"/><circle cx="84" cy="16" r="1.8" stroke-width="0.5"/>
+            </svg>
+            <div class="pd__cert mono"><span class="pd__cert-star">✦</span> Controle dimensional<br /><span class="pd__cert-sub">usinado sob desenho</span></div>
+            <img v-if="product.imageUrl" :src="product.imageUrl" :alt="product.name" class="pd__img" :class="{ 'is-loaded': imgLoaded }" @load="imgLoaded = true" loading="eager" />
+            <div v-else class="pd__ph">
+              <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="3" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="21"/><line x1="3" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="21" y2="12"/></svg>
             </div>
-            <button class="btn-ember btn-ember--full" @click="addToCart">
-              {{ added ? '✓ Adicionado à sacola' : 'Adicionar à sacola' }}
-            </button>
-          </template>
-          <template v-else>
-            <RouterLink to="/checkout" class="btn-ember btn-ember--full">
-              Finalizar compra →
-            </RouterLink>
-            <button class="btn-ghost-sm" @click="cart.removeItem(product!.id)">
-              Remover da sacola
-            </button>
-          </template>
-        </div>
-        <div class="detail__actions" v-else>
-          <a
-            href="https://wa.me/5500000000000?text=Oi!%20Tenho%20interesse%20neste%20produto%20da%20Brasa%20Premium"
-            target="_blank"
-            rel="noopener"
-            class="btn-ember btn-ember--full"
-          >
-            Consultar via WhatsApp →
-          </a>
+            <div class="pd__cat mono">{{ catLabel }}</div>
+          </div>
         </div>
 
-        <!-- trust signals -->
-        <div class="detail__trust">
-          <div class="detail__trust-item">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            Garantia 5 anos
+        <!-- INFO -->
+        <div class="pd__info">
+          <div class="pd__eyebrow mono"><span class="pd__eyebrow-ln"></span>{{ catLabel }} · sob desenho</div>
+          <h1 class="pd__name font-display">{{ product.name }}</h1>
+          <div class="pd__material mono">{{ product.material }}</div>
+          <p class="pd__desc">{{ product.description }}</p>
+
+          <div class="pd__specs">
+            <div class="pd__spec"><span class="pd__spec-k">Material</span><span class="pd__spec-v">{{ product.material }}</span></div>
+            <div class="pd__spec"><span class="pd__spec-k">Fabricação</span><span class="pd__spec-v">Usinagem CNC · sob desenho</span></div>
+            <div class="pd__spec"><span class="pd__spec-k">Tolerância</span><span class="pd__spec-v">Micrométrica · controle dimensional</span></div>
+            <div class="pd__spec"><span class="pd__spec-k">Prazo</span><span class="pd__spec-v">A combinar conforme lote</span></div>
+            <div class="pd__spec">
+              <span class="pd__spec-k">Disponibilidade</span>
+              <span v-if="product.inStock" class="pd__spec-v pd__spec-v--ok">Pronta entrega</span>
+              <span v-else class="pd__spec-v">Fabricação sob encomenda</span>
+            </div>
           </div>
-          <div class="detail__trust-item">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 7H4a2 2 0 00-2 2v6a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/><circle cx="12" cy="12" r="2"/></svg>
-            Pagamento seguro
+
+          <!-- price -->
+          <div class="pd__price-block" v-if="product.inStock && product.price > 0">
+            <div class="pd__price-label mono">A partir de</div>
+            <div class="pd__price font-display">{{ formatPrice(product.price) }}</div>
+            <div class="pd__price-sub mono">por peça · frete a calcular</div>
           </div>
-          <div class="detail__trust-item">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            Entrega para todo o país
+          <div class="pd__price-block" v-else>
+            <div class="pd__price-label mono">Valor</div>
+            <div class="pd__price pd__price--consult font-display">Sob consulta</div>
+            <div class="pd__price-sub mono">envie o desenho — orçamento em até 24h</div>
+          </div>
+
+          <!-- actions -->
+          <div class="pd__actions" v-if="product.inStock">
+            <template v-if="!isInCart">
+              <div class="pd__qty">
+                <button class="pd__qty-btn" @click="quantity = Math.max(1, quantity - 1)">−</button>
+                <span class="pd__qty-val mono">{{ quantity }}</span>
+                <button class="pd__qty-btn" @click="quantity++">+</button>
+              </div>
+              <button class="btn btn--gold pd__cta" @click="addToCart">{{ added ? '✓ Adicionado' : 'Adicionar ao carrinho' }}</button>
+            </template>
+            <template v-else>
+              <RouterLink to="/checkout" class="btn btn--gold pd__cta">Finalizar compra <span class="arrow">→</span></RouterLink>
+              <button class="pd__remove mono" @click="cart.removeItem(product!.id)">Remover</button>
+            </template>
+          </div>
+          <div class="pd__actions" v-else>
+            <a :href="`${whatsapp}?text=${encodeURIComponent(customMsg)}`" target="_blank" rel="noopener" class="btn btn--gold pd__cta">Solicitar orçamento <span class="arrow">→</span></a>
+          </div>
+
+          <!-- trust -->
+          <div class="pd__trust">
+            <div class="pd__trust-item mono"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/></svg> Controle dimensional</div>
+            <div class="pd__trust-item mono"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="10" rx="1"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg> Pagamento seguro</div>
+            <div class="pd__trust-item mono"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> Frete p/ todo o Brasil</div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- ── RELATED / MANIFESTO ── -->
-    <div class="detail__manifesto">
-      <div class="detail__manifesto-line" />
-      <p class="detail__manifesto-text">
-        Cada peça sai do atelier assinada e numerada.<br/>
-        <em>Do metal bruto à sua churrasqueira — sem intermediários.</em>
-      </p>
-      <div class="detail__manifesto-line" />
+      <!-- manifesto -->
+      <div class="pd__manifesto">
+        <span class="pd__manifesto-ln"></span>
+        <p class="mono">Cada peça segue o desenho técnico — do material certificado ao controle dimensional final.</p>
+        <span class="pd__manifesto-ln"></span>
+      </div>
     </div>
   </main>
 
-  <!-- loading state -->
-  <div class="detail-loading" v-else>
-    <div class="detail-loading__pulse" />
-  </div>
+  <div class="pd-loading" v-else><div class="pd-loading__pulse"></div></div>
 </template>
 
 <style scoped>
-/* ─── Page shell ─── */
-.detail {
-  min-height: 100vh;
-  background: var(--c-ink);
-  padding: 100px 70px 80px;
-  max-width: 1600px;
-  margin: 0 auto;
-}
+.pd { position: relative; min-height: 100vh; background: var(--c-bg); padding: 116px 0 80px; overflow: hidden; }
+.pd__grid { opacity: 0.5; }
+.pd__inner { position: relative; z-index: 1; }
 
-/* ─── Navigation bar ─── */
-.detail__nav {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 56px;
-}
+.pd__nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 48px; }
+.pd__back { display: inline-flex; align-items: center; gap: 8px; color: var(--c-muted); font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.16em; text-transform: uppercase; transition: color 0.2s; }
+.pd__back:hover { color: var(--c-accent); }
+.pd__crumb { display: flex; align-items: center; gap: 10px; font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--c-muted); }
+.pd__crumb a:hover { color: var(--c-accent); }
+.pd__crumb-cur { color: var(--c-text); max-width: 240px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+@media (max-width: 640px){ .pd__crumb { display: none; } }
 
-.detail__back {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: none;
-  border: none;
-  color: var(--c-ivory-mute);
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  cursor: pointer;
-  padding: 0;
-  transition: color 150ms;
-}
-.detail__back:hover { color: var(--c-ivory); }
+.pd__grid-main { display: grid; grid-template-columns: 1fr; gap: 48px; align-items: start; }
+@media (min-width: 940px){ .pd__grid-main { grid-template-columns: 1fr 1fr; gap: 72px; } }
 
-.detail__breadcrumb {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--c-ivory-mute);
-}
-.detail__breadcrumb a { color: inherit; text-decoration: none; transition: color 150ms; }
-.detail__breadcrumb a:hover { color: var(--c-ember); }
-.detail__breadcrumb span:last-child { color: var(--c-ivory-dim); }
+.pd__frame { position: relative; aspect-ratio: 4/5; background: var(--c-surface); border: 1px solid var(--c-border); overflow: hidden; display: grid; place-items: center; }
+.pd__dim { position: absolute; inset: 0; width: 100%; height: 100%; color: var(--c-accent); opacity: 0.22; pointer-events: none; z-index: 1; }
+.pd__cert { position: absolute; top: 18px; left: 18px; z-index: 2; border: 1px solid var(--c-accent); padding: 10px 14px; background: color-mix(in srgb, var(--c-bg) 82%, transparent); backdrop-filter: blur(8px); font-size: 0.58rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--c-accent); line-height: 1.7; }
+.pd__cert-sub { color: var(--c-muted); font-size: 0.52rem; }
+.pd__img { width: 100%; height: 100%; object-fit: contain; padding: 44px; opacity: 0; transition: opacity 0.6s; position: relative; z-index: 1; }
+.pd__img.is-loaded { opacity: 1; }
+.pd__ph { color: var(--c-faint); position: relative; z-index: 1; }
+.pd__cat { position: absolute; bottom: 18px; right: 18px; z-index: 2; font-size: 0.56rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--c-text); background: color-mix(in srgb, var(--c-bg) 82%, transparent); padding: 7px 12px; border: 1px solid var(--c-border-2); backdrop-filter: blur(8px); }
 
-/* ─── Main grid ─── */
-.detail__grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 80px;
-  align-items: start;
-}
+.pd__eyebrow { display: flex; align-items: center; gap: 12px; font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--c-accent); margin-bottom: 18px; }
+.pd__eyebrow-ln { width: 30px; height: 1px; background: var(--c-accent); }
+.pd__name { font-size: clamp(2.2rem, 4.5vw, 3.6rem); line-height: 0.95; letter-spacing: 0.02em; color: var(--c-text); margin-bottom: 14px; }
+.pd__material { font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--c-muted); margin-bottom: 22px; }
+.pd__desc { color: var(--c-muted); line-height: 1.75; margin-bottom: 32px; max-width: 520px; }
 
-/* ─── Image panel ─── */
-.detail__media { display: flex; flex-direction: column; gap: 16px; }
+.pd__specs { border-top: 1px solid var(--c-border); margin-bottom: 36px; }
+.pd__spec { display: grid; grid-template-columns: 1fr 1.4fr; gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--c-border); align-items: center; }
+.pd__spec-k { font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--c-muted); }
+.pd__spec-v { font-family: var(--font-mono); font-size: 0.72rem; color: var(--c-text); text-align: right; }
+.pd__spec-v--ok { color: var(--c-accent); }
 
-.detail__img-wrap {
-  position: relative;
-  aspect-ratio: 4/5;
-  background: radial-gradient(ellipse at center, #1f1a16 0%, var(--c-ink-card) 70%);
-  border: 1px solid var(--c-hair);
-  overflow: hidden;
-}
+.pd__price-block { margin-bottom: 32px; }
+.pd__price-label { font-size: 0.58rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--c-muted); margin-bottom: 6px; }
+.pd__price { font-size: 3.4rem; line-height: 1; letter-spacing: 0.02em; color: var(--c-accent); }
+.pd__price--consult { font-size: 2.4rem; }
+.pd__price-sub { font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--c-muted); margin-top: 8px; }
 
-.detail__cert {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  z-index: 2;
-  border: 1px solid var(--c-ember);
-  padding: 12px 16px;
-  background: rgba(11, 10, 8, 0.82);
-  backdrop-filter: blur(12px);
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--c-ember);
-  line-height: 1.7;
-}
-.detail__cert-star { margin-right: 4px; }
-.detail__cert-sub { color: var(--c-ivory-dim); font-size: 9px; }
+.pd__actions { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 32px; }
+.pd__qty { display: flex; align-items: center; border: 1px solid var(--c-border-2); }
+.pd__qty-btn { width: 46px; height: 52px; color: var(--c-text); font-size: 1.2rem; display: grid; place-items: center; transition: background 0.2s; }
+.pd__qty-btn:hover { background: var(--c-surface2); }
+.pd__qty-val { width: 46px; text-align: center; font-size: 0.85rem; color: var(--c-text); border-left: 1px solid var(--c-border-2); border-right: 1px solid var(--c-border-2); line-height: 52px; }
+.pd__cta { flex: 1; justify-content: center; min-width: 200px; }
+.pd__remove { color: var(--c-muted); font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase; text-decoration: underline; text-underline-offset: 4px; transition: color 0.2s; }
+.pd__remove:hover { color: #ef4444; }
 
-.detail__img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  padding: 48px;
-  opacity: 0;
-  transition: opacity 600ms;
-}
-.detail__img--loaded { opacity: 1; }
+.pd__trust { display: flex; gap: 22px; flex-wrap: wrap; padding-top: 22px; border-top: 1px solid var(--c-border); }
+.pd__trust-item { display: flex; align-items: center; gap: 8px; font-size: 0.56rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--c-muted); }
+.pd__trust-item svg { color: var(--c-accent); flex-shrink: 0; }
 
-.detail__cat-badge {
-  position: absolute;
-  bottom: 20px;
-  right: 20px;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--c-ivory);
-  background: rgba(11, 10, 8, 0.82);
-  padding: 8px 14px;
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--c-hair-bold);
-}
+.pd__manifesto { display: grid; grid-template-columns: 1fr auto 1fr; gap: 28px; align-items: center; margin-top: 88px; padding: 48px 0; border-top: 1px solid var(--c-border); }
+.pd__manifesto-ln { height: 1px; background: var(--c-border-2); }
+.pd__manifesto p { font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--c-muted); text-align: center; line-height: 1.8; }
+@media (max-width: 768px){ .pd__manifesto { grid-template-columns: 1fr; } .pd__manifesto-ln { display: none; } .pd__price { font-size: 2.6rem; } }
 
-/* thumbnails */
-.detail__thumbs {
-  display: flex;
-  gap: 12px;
-}
-.detail__thumb {
-  width: 80px;
-  height: 80px;
-  border: 1px solid var(--c-hair);
-  overflow: hidden;
-  cursor: pointer;
-  transition: border-color 200ms;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--c-ink-card);
-  flex-shrink: 0;
-}
-.detail__thumb img { width: 100%; height: 100%; object-fit: contain; padding: 8px; }
-.detail__thumb--active { border-color: var(--c-ember); }
-.detail__thumb--ph { color: var(--c-ivory-mute); font-size: 20px; font-weight: 300; }
-.detail__thumb:hover { border-color: var(--c-hair-bold); }
-
-/* ─── Info panel ─── */
-.detail__info { padding-top: 8px; }
-
-.detail__eyebrow {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  font-family: var(--font-mono);
-  font-size: 10.5px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--c-ember);
-  margin-bottom: 20px;
-}
-.detail__eyebrow-line {
-  width: 32px;
-  height: 1px;
-  background: var(--c-ember);
-  flex-shrink: 0;
-}
-
-.detail__name {
-  font-family: var(--font-display);
-  font-size: clamp(2.4rem, 4vw, 3.8rem);
-  font-weight: 400;
-  letter-spacing: -0.03em;
-  line-height: 0.95;
-  color: var(--c-ivory);
-  margin-bottom: 18px;
-}
-
-.detail__material {
-  font-family: var(--font-editorial);
-  font-style: italic;
-  font-size: 17px;
-  color: var(--c-ivory-dim);
-  margin-bottom: 20px;
-}
-
-.detail__desc {
-  font-size: 16px;
-  line-height: 1.75;
-  color: var(--c-ivory-dim);
-  margin-bottom: 32px;
-  max-width: 520px;
-  text-wrap: pretty;
-}
-
-/* specs */
-.detail__specs {
-  border-top: 1px solid var(--c-hair);
-  margin-bottom: 36px;
-}
-.detail__spec {
-  display: grid;
-  grid-template-columns: 1fr 1.4fr;
-  padding: 13px 0;
-  border-bottom: 1px solid var(--c-hair);
-  gap: 16px;
-  align-items: center;
-}
-.detail__spec-k {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--c-ivory-mute);
-}
-.detail__spec-v {
-  font-family: var(--font-mono);
-  font-size: 12.5px;
-  color: var(--c-ivory);
-  text-align: right;
-}
-.detail__spec-v--avail { color: var(--c-ember); }
-
-/* price */
-.detail__price-block { margin-bottom: 36px; }
-.detail__price-label {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--c-ivory-mute);
-  margin-bottom: 6px;
-}
-.detail__price {
-  font-family: var(--font-display);
-  font-size: 56px;
-  font-weight: 500;
-  letter-spacing: -0.03em;
-  line-height: 1;
-  color: var(--c-ember);
-}
-.detail__price-consult {
-  font-family: var(--font-editorial);
-  font-style: italic;
-  font-size: 32px;
-  color: var(--c-ivory-dim);
-}
-.detail__price-sub {
-  font-family: var(--font-editorial);
-  font-style: italic;
-  font-size: 14px;
-  color: var(--c-ivory-mute);
-  margin-top: 6px;
-}
-
-/* actions */
-.detail__actions {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  flex-wrap: wrap;
-  margin-bottom: 32px;
-}
-
-.detail__qty {
-  display: flex;
-  align-items: center;
-  gap: 0;
-  border: 1px solid var(--c-hair-bold);
-}
-.detail__qty-btn {
-  width: 44px;
-  height: 52px;
-  background: none;
-  border: none;
-  color: var(--c-ivory);
-  font-size: 20px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 150ms;
-}
-.detail__qty-btn:hover { background: var(--c-hair); }
-.detail__qty-val {
-  width: 44px;
-  text-align: center;
-  font-family: var(--font-mono);
-  font-size: 14px;
-  color: var(--c-ivory);
-  border-left: 1px solid var(--c-hair-bold);
-  border-right: 1px solid var(--c-hair-bold);
-  line-height: 52px;
-}
-
-.btn-ember {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--c-ember);
-  color: var(--c-ivory);
-  border: none;
-  padding: 16px 28px;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  cursor: pointer;
-  text-decoration: none;
-  transition: background 200ms, box-shadow 200ms;
-  white-space: nowrap;
-}
-.btn-ember:hover {
-  background: var(--c-ember-hot);
-  box-shadow: 0 10px 40px var(--c-ember-glow);
-}
-.btn-ember--full { flex: 1; }
-
-.btn-ghost-sm {
-  background: none;
-  border: none;
-  color: var(--c-ivory-mute);
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  cursor: pointer;
-  padding: 0;
-  transition: color 150ms;
-  text-decoration: underline;
-  text-underline-offset: 4px;
-}
-.btn-ghost-sm:hover { color: var(--c-ivory); }
-
-/* trust */
-.detail__trust {
-  display: flex;
-  gap: 24px;
-  flex-wrap: wrap;
-  padding-top: 20px;
-  border-top: 1px solid var(--c-hair);
-}
-.detail__trust-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--c-ivory-mute);
-}
-.detail__trust-item svg { color: var(--c-ember); flex-shrink: 0; }
-
-/* ─── Manifesto strip ─── */
-.detail__manifesto {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  gap: 32px;
-  align-items: center;
-  margin-top: 96px;
-  padding: 56px 0;
-  border-top: 1px solid var(--c-hair);
-}
-.detail__manifesto-line {
-  height: 1px;
-  background: var(--c-hair-bold);
-}
-.detail__manifesto-text {
-  font-family: var(--font-editorial);
-  font-style: italic;
-  font-size: 22px;
-  color: var(--c-ivory-dim);
-  text-align: center;
-  line-height: 1.6;
-  text-wrap: balance;
-  white-space: nowrap;
-}
-.detail__manifesto-text em { color: var(--c-ember); }
-
-/* ─── Loading ─── */
-.detail-loading {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--c-ink);
-}
-.detail-loading__pulse {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  border: 1px solid var(--c-ember);
-  animation: detail-pulse 1.4s ease-in-out infinite;
-}
-@keyframes detail-pulse {
-  0%, 100% { transform: scale(0.85); opacity: 0.4; }
-  50% { transform: scale(1.1); opacity: 1; }
-}
-
-/* ─── Responsive ─── */
-@media (max-width: 1024px) {
-  .detail { padding: 80px 40px 60px; }
-  .detail__grid { gap: 48px; }
-  .detail__name { font-size: 2.4rem; }
-}
-
-@media (max-width: 768px) {
-  .detail { padding: 80px 24px 48px; }
-  .detail__grid { grid-template-columns: 1fr; gap: 32px; }
-  .detail__nav { flex-direction: column; align-items: flex-start; gap: 16px; }
-  .detail__breadcrumb { display: none; }
-  .detail__manifesto { grid-template-columns: 1fr; text-align: center; }
-  .detail__manifesto-line { display: none; }
-  .detail__manifesto-text { white-space: normal; }
-  .detail__price { font-size: 40px; }
-}
+.pd-loading { min-height: 100vh; display: grid; place-items: center; background: var(--c-bg); }
+.pd-loading__pulse { width: 46px; height: 46px; border-radius: 50%; border: 1px solid var(--c-accent); animation: pdp 1.4s ease-in-out infinite; }
+@keyframes pdp { 0%,100%{ transform: scale(0.85); opacity: 0.4; } 50%{ transform: scale(1.1); opacity: 1; } }
 </style>

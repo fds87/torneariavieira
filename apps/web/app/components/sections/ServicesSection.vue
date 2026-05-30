@@ -1,225 +1,85 @@
 <template>
-  <section id="services" class="services">
-    <TechBg />
-
-    <div class="services__inner">
-
-      <div class="svc-head">
-        <div class="svc-head__label">
-          <span class="label-tech" style="color:var(--c-accent)">//</span>
-          <span class="label-tech" style="color:var(--c-muted); font-size:0.65rem">01 — Nossos Serviços</span>
-          <div class="svc-head__line"></div>
+  <section id="services" class="section section--alt">
+    <div class="shell">
+      <div class="section__head svc-head" v-reveal>
+        <div>
+          <span class="eyebrow"><b>//</b> 01 — Nossos Serviços <span class="ln"></span></span>
+          <h2 class="section__title">FABRICAÇÃO<br /><span class="steel">SOB MEDIDA</span></h2>
         </div>
-        <div class="svc-head__row">
-          <h2 class="svc-title font-display">
-            FABRICAÇÃO<br/>
-            <span style="color:var(--c-steel)">SOB MEDIDA</span>
-          </h2>
-          <p class="svc-desc">
-            Cada peça produzida segue especificação técnica rigorosa.<br/>
-            Matérias-primas certificadas, controle dimensional em todas as etapas.
-          </p>
-        </div>
+        <p>Cada peça produzida segue especificação técnica rigorosa. Matérias-primas certificadas, controle dimensional em todas as etapas.</p>
       </div>
 
       <div class="svc-list">
-        <div
+        <article
           v-for="(s, i) in services"
           :key="s.id"
-          class="svc-item"
-          :class="{ 'svc-item--rev': i % 2 === 1 }"
+          class="svc"
+          :class="{ 'svc--rev': i % 2 === 1 }"
+          v-reveal
         >
-          <div class="svc-img-panel">
-            <svg class="svc-img-svg" xmlns="http://www.w3.org/2000/svg">
-              <line x1="10" y1="24" x2="10" y2="95%" stroke="currentColor" stroke-width="0.7" stroke-dasharray="4 3"/>
-              <line x1="5"  y1="24" x2="15" y2="24" stroke="currentColor" stroke-width="0.8"/>
-              <line x1="5"  y1="95%" x2="15" y2="95%" stroke="currentColor" stroke-width="0.8"/>
-              <line x1="10%"  y1="92%" x2="92%"  y2="92%" stroke="currentColor" stroke-width="0.7" stroke-dasharray="4 3"/>
-              <line x1="10%"  y1="88%" x2="10%"  y2="96%" stroke="currentColor" stroke-width="0.8"/>
-              <line x1="92%"  y1="88%" x2="92%"  y2="96%" stroke="currentColor" stroke-width="0.8"/>
-              <circle cx="88%" cy="12%" r="20" fill="none" stroke="currentColor" stroke-width="0.7"/>
-              <circle cx="88%" cy="12%" r="5"  fill="none" stroke="currentColor" stroke-width="0.7"/>
-              <line x1="76%" y1="12%" x2="100%" y2="12%" stroke="currentColor" stroke-width="0.5"/>
-              <line x1="88%" y1="0%"  x2="88%"  y2="26%" stroke="currentColor" stroke-width="0.5"/>
-            </svg>
-
-            <img :src="s.image" :alt="s.title" class="svc-img" />
-            <div class="svc-img-tint"></div>
-            <div class="svc-img-num font-display">{{ s.id }}</div>
-            <div class="svc-img-badge label-tech">{{ s.material }}</div>
+          <div class="svc__idx">{{ s.id }}</div>
+          <div class="svc__media">
+            <DimOverlay />
+            <div class="svc__scan"></div>
+            <span class="svc__badge">{{ s.material }}</span>
+            <img :src="s.image" :alt="s.title" loading="lazy" />
+            <span class="svc__bignum font-display">{{ s.id }}</span>
           </div>
-
-          <div class="svc-text-panel">
-            <div class="svc-text-panel__inner">
-              <div class="svc-text-meta">
-                <span class="label-tech" style="font-size:0.65rem">{{ s.id }}</span>
-                <div class="svc-text-meta__line"></div>
-              </div>
-              <h3 class="svc-item-title font-display">{{ s.title }}</h3>
-              <p class="svc-item-desc">{{ s.description }}</p>
-
-              <div class="svc-tags">
-                <span v-for="tag in s.tags" :key="tag" class="svc-tag label-tech">{{ tag }}</span>
-              </div>
-
-              <a :href="whatsapp" target="_blank" class="svc-cta btn-outline-gold">
-                Solicitar este serviço
-              </a>
-            </div>
+          <div class="svc__body">
+            <div class="svc__meta"><span class="ln"></span><span>{{ s.id }} / 03</span></div>
+            <h3 class="svc__title font-display">{{ s.title }}</h3>
+            <p class="svc__desc">{{ s.description }}</p>
+            <div class="svc__tags"><span v-for="t in s.tags" :key="t" class="tag">{{ t }}</span></div>
+            <a :href="quoteLink(s.title)" target="_blank" rel="noopener" class="svc__link">Solicitar este serviço <span class="arrow">→</span></a>
           </div>
-
-        </div>
+        </article>
       </div>
-
     </div>
   </section>
 </template>
 
 <script setup>
 import { services } from '~/data/content.js'
-const whatsapp = 'https://wa.me/5541999802662'
+
+const quoteLink = (title) => `https://wa.me/5541999802662?text=${encodeURIComponent('Olá! Tenho interesse em: ' + title)}`
 </script>
 
 <style scoped>
-.services {
-  position: relative;
-  background: var(--c-surface);
-  padding: 96px 0 0;
-  overflow: hidden;
+.svc-head { display: flex; flex-direction: column; gap: 22px; }
+@media (min-width: 1024px){ .svc-head { flex-direction: row; align-items: flex-end; justify-content: space-between; } }
+.svc-head p { max-width: 380px; color: var(--c-muted); }
+
+.svc-list { border-top: 1px solid var(--c-border); }
+.svc { position: relative; display: grid; grid-template-columns: 1fr; border-bottom: 1px solid var(--c-border); transition: background 0.4s; }
+.svc:hover { background: var(--c-surface2); }
+@media (min-width: 920px){
+  .svc { grid-template-columns: 80px 1.1fr 1.4fr; min-height: 320px; }
+  .svc--rev .svc__media { order: 3; }
+  .svc--rev .svc__body { order: 2; }
+  .svc--rev .svc__idx { order: 1; }
 }
-.services__inner {
-  position: relative; z-index: 2;
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 0 32px;
-}
-.svc-head { margin-bottom: 64px; }
-.svc-head__label { display:flex; align-items:center; gap:10px; margin-bottom:20px; }
-.svc-head__line { flex:1; height:1px; background:var(--c-border); }
-.svc-head__row { display: flex; flex-direction: column; gap: 20px; }
-@media (min-width:1024px) {
-  .svc-head__row { flex-direction:row; align-items:flex-end; justify-content:space-between; }
-}
-.svc-title {
-  font-size: clamp(2.4rem, 5.5vw, 5rem);
-  line-height: 0.9;
-  color: var(--c-text);
-  letter-spacing: 0.02em;
-}
-.svc-desc {
-  max-width: 380px;
-  color: var(--c-muted);
-  font-size: 0.95rem;
-  font-weight: 500;
-  line-height: 1.7;
-}
-.svc-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  border-top: 1px solid var(--c-border);
-}
-.svc-item {
-  display: grid;
-  grid-template-columns: 1fr;
-  min-height: 520px;
-  border-bottom: 1px solid var(--c-border);
-}
-@media (min-width: 900px) {
-  .svc-item       { grid-template-columns: 3fr 2fr; }
-  .svc-item--rev  { grid-template-columns: 2fr 3fr; }
-  .svc-item--rev .svc-img-panel  { order: 2; }
-  .svc-item--rev .svc-text-panel { order: 1; }
-}
-.svc-img-panel {
-  position: relative;
-  overflow: hidden;
-  background: var(--c-bg);
-  min-height: 380px;
-}
-@media (min-width: 900px) { .svc-img-panel { min-height: unset; } }
-.svc-img-svg {
-  position: absolute; inset: 0;
-  width: 100%; height: 100%;
-  color: var(--c-accent);
-  opacity: 0.35;
-  pointer-events: none;
-  z-index: 2;
-}
-:global(:root.dark) .svc-img-svg { opacity: 0.25; }
-.svc-img {
-  width: 100%; height: 100%;
-  object-fit: contain;
-  object-position: center;
-  display: block;
-  padding: 40px;
-  transition: transform 0.6s ease;
-  position: relative; z-index: 1;
-}
-.svc-item:hover .svc-img { transform: scale(1.04); }
-.svc-img-tint {
-  position: absolute; inset: 0; z-index: 1;
-  background: radial-gradient(ellipse at center, transparent 40%, var(--c-surface) 100%);
-  pointer-events: none;
-}
-.svc-img-num {
-  position: absolute;
-  bottom: 12px; left: 20px;
-  font-size: 8rem;
-  line-height: 1;
-  color: var(--c-accent);
-  opacity: 0.08;
-  z-index: 3;
-  pointer-events: none;
-}
-.svc-img-badge {
-  position: absolute;
-  top: 20px; left: 20px;
-  background: var(--c-accent);
-  color: #fff;
-  font-size: 0.58rem;
-  padding: 5px 12px;
-  z-index: 4;
-  letter-spacing: 0.15em;
-}
-:global(:root.dark) .svc-img-badge { color: #0A0A0A; }
-.svc-text-panel {
-  display: flex;
-  align-items: center;
-  border-left: 1px solid var(--c-border);
-  background: var(--c-surface);
-}
-.svc-item--rev .svc-text-panel { border-left: none; border-right: 1px solid var(--c-border); }
-.svc-text-panel__inner { padding: 48px 40px; }
-.svc-text-meta {
-  display: flex; align-items: center; gap: 12px;
-  margin-bottom: 16px;
-}
-.svc-text-meta__line { width: 40px; height: 1px; background: var(--c-accent); }
-.svc-item-title {
-  font-size: clamp(1.8rem, 3.5vw, 3rem);
-  line-height: 0.95;
-  color: var(--c-text);
-  letter-spacing: 0.03em;
-  margin-bottom: 16px;
-  transition: color 0.3s;
-}
-.svc-item:hover .svc-item-title { color: var(--c-accent); }
-.svc-item-desc {
-  color: var(--c-muted);
-  font-size: 0.9rem;
-  font-weight: 500;
-  line-height: 1.7;
-  margin-bottom: 24px;
-}
-.svc-tags { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:32px; }
-.svc-tag {
-  font-size: 0.58rem;
-  color: var(--c-muted);
-  padding: 4px 10px;
-  border: 1px solid var(--c-border);
-  transition: all 0.2s;
-}
-.svc-item:hover .svc-tag { border-color: rgba(200,169,110,0.4); }
-.svc-cta { display: inline-block; font-size: 0.65rem; }
+.svc__idx { display: flex; align-items: flex-start; justify-content: center; padding-top: 40px; font-family: var(--font-display); font-size: 1.5rem; color: var(--c-faint); border-right: 1px solid var(--c-border); }
+@media (max-width: 919px){ .svc__idx { display: none; } }
+.svc__media { position: relative; overflow: hidden; background: var(--c-bg2); min-height: 280px; border-right: 1px solid var(--c-border); }
+.svc--rev .svc__media { border-right: none; border-left: 1px solid var(--c-border); }
+.svc__media img { width: 100%; height: 100%; object-fit: contain; padding: 38px; transition: transform 0.7s var(--ease-out), filter 0.5s; filter: saturate(0.9); }
+.svc:hover .svc__media img { transform: scale(1.07) rotate(-1deg); filter: saturate(1.1); }
+.svc__scan { position: absolute; left: 0; right: 0; height: 2px; top: -2px; background: linear-gradient(90deg, transparent, var(--c-accent), transparent); opacity: 0; }
+.svc:hover .svc__scan { opacity: 0.8; animation: scan 2.4s var(--ease) infinite; }
+@keyframes scan { 0%{ top: 0%;} 100%{ top: 100%;} }
+.svc__badge { position: absolute; top: 18px; left: 18px; z-index: 4; background: var(--c-accent); color: #fff; font-family: var(--font-mono); font-size: 0.56rem; letter-spacing: 0.14em; text-transform: uppercase; padding: 5px 11px; }
+:global(:root.dark) .svc__badge { color: #0B0B0C; }
+.svc__bignum { position: absolute; right: 14px; bottom: -10px; font-size: 7rem; color: var(--c-accent); opacity: 0.07; z-index: 1; pointer-events: none; }
+
+.svc__body { padding: 42px 40px; display: flex; flex-direction: column; justify-content: center; }
+@media (max-width: 640px){ .svc__body { padding: 30px 22px 34px; } }
+.svc__meta { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.svc__meta .ln { width: 38px; height: 1px; background: var(--c-accent); }
+.svc__meta span { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.16em; color: var(--c-muted); }
+.svc__title { font-size: clamp(1.7rem, 3.4vw, 2.7rem); line-height: 0.98; letter-spacing: 0.03em; margin-bottom: 14px; transition: color 0.3s; }
+.svc:hover .svc__title { color: var(--c-accent); }
+.svc__desc { color: var(--c-muted); margin-bottom: 22px; max-width: 460px; }
+.svc__tags { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 24px; }
+.svc__link { display: inline-flex; align-items: center; gap: 10px; align-self: flex-start; font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--c-accent); }
+@media (max-width: 760px){ .svc__media { min-height: 240px; } .svc__title { font-size: clamp(1.7rem, 7vw, 2.3rem); } }
 </style>

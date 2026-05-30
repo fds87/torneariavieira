@@ -1,44 +1,44 @@
 <template>
-  <div class="catalog-page">
-    <div class="catalog-page__header">
-      <TechBg />
-      <div class="catalog-page__header-inner">
-        <SectionLabel label="Produtos" />
-        <h1 class="catalog-page__title font-display">Catálogo</h1>
-        <p class="catalog-page__sub">
-          Componentes usinados com precisão. Peças sob medida ou de linha.
-        </p>
+  <div class="cat">
+    <!-- Header -->
+    <header class="cat__hero">
+      <div class="grid-layer"></div>
+      <div class="shell cat__hero-in">
+        <span class="eyebrow"><b>//</b> Catálogo <span class="ln"></span></span>
+        <h1 class="cat__title font-display">PEÇAS &amp;<br /><span class="gold">SERVIÇOS</span></h1>
+        <p class="cat__sub">Componentes usinados com precisão — peças de linha prontas para envio e fabricação sob desenho. Frete para todo o Brasil.</p>
       </div>
-    </div>
+    </header>
 
-    <div class="catalog-page__body">
-      <div class="catalog-page__filters">
+    <div class="shell cat__body">
+      <!-- Filtros -->
+      <div class="cat__filters">
         <button
-          v-for="cat in categories"
-          :key="cat.value"
-          class="filter-btn label-tech"
-          :class="{ 'filter-btn--active': activeCategory === cat.value }"
-          @click="activeCategory = cat.value"
-        >
-          {{ cat.label }}
-        </button>
+          v-for="c in categories"
+          :key="c.value"
+          class="cat__filter"
+          :class="{ 'is-active': active === c.value }"
+          @click="active = c.value"
+        >{{ c.label }}</button>
       </div>
 
-      <div v-if="store.loading" class="catalog-page__loading">
-        <span class="label-tech">Carregando produtos...</span>
+      <div v-if="store.loading" class="cat__state mono">Carregando peças…</div>
+      <div v-else-if="!filtered.length" class="cat__state mono">Nenhuma peça encontrada nesta categoria.</div>
+
+      <div v-else class="cat__grid">
+        <ProductCard v-for="p in filtered" :key="p.slug" :product="p" v-reveal />
       </div>
 
-      <div v-else-if="!filteredProducts.length" class="catalog-page__empty">
-        <span class="label-tech">Nenhum produto encontrado</span>
-      </div>
-
-      <div v-else class="catalog-page__grid">
-        <ProductCard
-          v-for="product in filteredProducts"
-          :key="product.slug"
-          :product="product"
-        />
-      </div>
+      <!-- CTA sob encomenda -->
+      <section class="cat__cta" v-reveal>
+        <div class="cat__cta-bg grid-layer"></div>
+        <div class="cat__cta-in">
+          <span class="eyebrow"><b>//</b> Sob encomenda</span>
+          <h2 class="cat__cta-title font-display">NÃO ACHOU A PEÇA?<br /><span class="gold">FABRICAMOS SOB DESENHO.</span></h2>
+          <p>Envie o desenho técnico ou a amostra. Fazemos eixos, buchas, conjuntos e componentes especiais com tolerância micrométrica — orçamento em até 24h.</p>
+          <a :href="whatsapp" target="_blank" rel="noopener" class="btn btn--gold" data-magnetic>Solicitar orçamento <span class="arrow">→</span></a>
+        </div>
+      </section>
     </div>
   </div>
 </template>
@@ -48,7 +48,8 @@ import { useProductStore } from '@/stores/products'
 import { computed, onMounted, ref } from 'vue'
 
 const store = useProductStore()
-const activeCategory = ref('all')
+const active = ref('all')
+const whatsapp = 'https://wa.me/5541999802662'
 
 const categories = [
   { value: 'all', label: 'Todos' },
@@ -59,96 +60,45 @@ const categories = [
   { value: 'outros', label: 'Outros' },
 ]
 
-const filteredProducts = computed(() =>
-  activeCategory.value === 'all'
+const filtered = computed(() =>
+  active.value === 'all'
     ? store.products
-    : store.products.filter((p) => p.category === activeCategory.value),
+    : store.products.filter((p) => p.category === active.value),
 )
 
 onMounted(() => store.fetchProducts())
-
 useHead({ title: 'Catálogo — Tornearia Vieira' })
 </script>
 
 <style scoped>
-.catalog-page { min-height: 100vh; padding-top: 68px; }
+.cat { min-height: 100vh; padding-top: 76px; background: var(--c-bg); }
 
-.catalog-page__header {
-  position: relative;
-  padding: 80px 24px 60px;
-  background: var(--c-bg);
-  border-bottom: 1px solid var(--c-border);
-  overflow: hidden;
-}
+.cat__hero { position: relative; padding: 80px 0 60px; border-bottom: 1px solid var(--c-border); overflow: hidden; }
+.cat__hero-in { position: relative; z-index: 1; }
+.cat__title { font-size: clamp(3rem, 8vw, 6.5rem); letter-spacing: 0.02em; line-height: 0.9; margin: 16px 0 18px; }
+.cat__sub { color: var(--c-muted); max-width: 520px; }
 
-.catalog-page__header-inner {
-  max-width: 1280px;
-  margin: 0 auto;
-  position: relative;
-  z-index: 1;
+.cat__body { padding: 48px 0 110px; }
+.cat__filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 44px; }
+.cat__filter {
+  padding: 9px 20px; border: 1px solid var(--c-border); background: transparent; color: var(--c-muted);
+  font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase; cursor: pointer;
+  clip-path: polygon(7px 0, 100% 0, calc(100% - 7px) 100%, 0 100%);
+  transition: color 0.25s, border-color 0.25s, background 0.25s;
 }
+.cat__filter:hover, .cat__filter.is-active { border-color: var(--c-accent); color: var(--c-accent); background: color-mix(in srgb, var(--c-accent) 8%, transparent); }
 
-.catalog-page__title {
-  font-size: clamp(3rem, 8vw, 7rem);
-  letter-spacing: 0.04em;
-  color: var(--c-text);
-  margin: 12px 0 16px;
-  line-height: 1;
-}
+.cat__state { padding: 80px 0; text-align: center; color: var(--c-muted); letter-spacing: 0.16em; text-transform: uppercase; font-size: 0.7rem; }
 
-.catalog-page__sub {
-  color: var(--c-muted);
-  max-width: 480px;
-}
+.cat__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+@media (max-width: 900px){ .cat__grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px){ .cat__grid { grid-template-columns: 1fr; } }
 
-.catalog-page__body {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 48px 24px 100px;
-}
-
-.catalog-page__filters {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-bottom: 40px;
-}
-
-.filter-btn {
-  padding: 8px 20px;
-  border: 1px solid var(--c-border);
-  background: transparent;
-  color: var(--c-muted);
-  cursor: pointer;
-  transition: all 0.2s;
-  clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
-}
-
-.filter-btn:hover,
-.filter-btn--active {
-  border-color: var(--c-accent);
-  color: var(--c-accent);
-  background: rgba(184, 146, 30, 0.06);
-}
-
-.catalog-page__loading,
-.catalog-page__empty {
-  padding: 80px 0;
-  text-align: center;
-  color: var(--c-muted);
-}
-
-.catalog-page__grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-}
-
-@media (max-width: 900px) {
-  .catalog-page__grid { grid-template-columns: repeat(2, 1fr); }
-}
-
-@media (max-width: 600px) {
-  .catalog-page__grid { grid-template-columns: 1fr; }
-}
+.cat__cta { position: relative; margin-top: 72px; border: 1px solid var(--c-border); background: var(--c-surface); overflow: hidden; }
+.cat__cta-bg { opacity: 0.5; }
+.cat__cta-in { position: relative; z-index: 1; padding: 64px 48px; display: flex; flex-direction: column; align-items: flex-start; gap: 18px; }
+.cat__cta-title { font-size: clamp(1.9rem, 4.5vw, 3.4rem); line-height: 0.95; letter-spacing: 0.02em; }
+.cat__cta-in p { color: var(--c-muted); max-width: 560px; }
+.cat__cta-in .btn { margin-top: 8px; }
+@media (max-width: 640px){ .cat__cta-in { padding: 40px 24px; } .cat__body { padding: 40px 0 90px; } }
 </style>

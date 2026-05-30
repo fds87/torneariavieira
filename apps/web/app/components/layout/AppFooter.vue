@@ -1,135 +1,61 @@
 <template>
   <footer class="footer">
-    <div class="footer__inner">
-      <div class="footer__grid">
-
-        <!-- Brand -->
+    <div class="shell">
+      <div class="footer__top">
         <div class="footer__brand">
-          <img
-            src="https://torneariavieiraoficial.com.br/wp-content/uploads/2025/11/LOGO-png-2.png"
-            alt="Tornearia Vieira"
-            class="footer__logo"
-          />
-          <p class="footer__tagline">
-            Precisão em usinagem e fabricação de peças industriais sob desenho.<br/>
-            São José dos Pinhais — PR
-          </p>
+          <NuxtLink to="/" class="brand" aria-label="Tornearia Vieira">
+            <img class="brand__logo brand__logo--dark" src="/logo-dark.png" alt="Tornearia Vieira" />
+            <img class="brand__logo brand__logo--light" src="/logo.png" alt="" aria-hidden="true" />
+          </NuxtLink>
+          <p>Precisão em usinagem e fabricação de peças industriais sob desenho. {{ site.location }}.</p>
         </div>
-
-        <!-- Nav -->
-        <div>
-          <div class="label-tech" style="font-size:0.6rem; color:var(--c-muted); margin-bottom:16px">Navegação</div>
-          <nav class="footer__nav">
-            <a v-for="item in navItems" :key="item.href" :href="item.href" class="footer__link">{{ item.label }}</a>
-          </nav>
+        <div class="footer__col">
+          <h4>Navegação</h4>
+          <a href="/#services">Serviços</a>
+          <NuxtLink to="/catalogo">Catálogo</NuxtLink>
+          <a href="/#about">Sobre</a>
+          <a href="/#contact">Contato</a>
         </div>
-
-        <!-- Contact -->
-        <div>
-          <div class="label-tech" style="font-size:0.6rem; color:var(--c-muted); margin-bottom:16px">Contato</div>
-          <div class="footer__contacts">
-            <a :href="whatsapp" target="_blank" class="footer__contact">
-              <span class="label-tech" style="font-size:0.6rem">TEL</span>
-              <span>(41) 99980-2662</span>
-            </a>
-            <a href="https://www.facebook.com/profile.php?id=100095592520678" target="_blank" class="footer__contact">
-              <span class="label-tech" style="font-size:0.6rem">FB</span>
-              <span>Facebook</span>
-            </a>
-          </div>
+        <div class="footer__col">
+          <h4>Contato</h4>
+          <p>{{ site.phoneFormatted }}</p>
+          <a :href="`mailto:${site.email}`">E-mail</a>
+          <a :href="site.facebook" target="_blank" rel="noopener">Facebook</a>
+          <p>{{ site.location }}</p>
         </div>
-
       </div>
-
-      <!-- Bottom -->
+    </div>
+    <div class="footer__bigtv font-display">TORNEARIA VIEIRA</div>
+    <div class="shell">
       <div class="footer__bottom">
-        <span class="label-tech" style="font-size:0.6rem; color:var(--c-muted)">
-          © {{ year }} TORNEARIA VIEIRA — TODOS OS DIREITOS RESERVADOS
-        </span>
-        <span class="label-tech" style="font-size:0.6rem; color: #222">
-          SÃO JOSÉ DOS PINHAIS · PR · BRASIL
-        </span>
+        <span>© {{ year }} Tornearia Vieira — Todos os direitos reservados</span>
+        <span>Usinagem · CNC · Sob desenho</span>
       </div>
     </div>
   </footer>
 </template>
 
 <script setup>
+import { site } from '~/data/content.js'
 const year = new Date().getFullYear()
-const whatsapp = 'https://wa.me/5541999802662'
-const navItems = [
-  { label: 'Serviços',    href: '#services' },
-  { label: 'Sobre',       href: '#about' },
-  { label: 'Por que nós', href: '#whyus' },
-  { label: 'Contato',     href: '#contact' },
-]
 </script>
 
 <style scoped>
-.footer {
-  background: var(--c-surface);
-  border-top: 1px solid var(--c-border);
-}
-.footer__inner {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 64px 24px 32px;
-}
-.footer__grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 40px;
-  margin-bottom: 48px;
-}
-@media (min-width: 768px) {
-  .footer__grid { grid-template-columns: 2fr 1fr 1fr; gap: 60px; }
-}
-.footer__logo {
-  height: 40px;
-  width: auto;
-  object-fit: contain;
-  margin-bottom: 16px;
-  display: block;
-}
-.footer__tagline {
-  color: var(--c-muted);
-  font-size: 0.8rem;
-  line-height: 1.65;
-  max-width: 280px;
-}
-.footer__nav {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.footer__link {
-  color: var(--c-muted);
-  font-size: 0.8rem;
-  text-decoration: none;
-  transition: color 0.2s;
-}
-.footer__link:hover { color: var(--c-accent); }
-.footer__contacts { display: flex; flex-direction: column; gap: 12px; }
-.footer__contact {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: var(--c-muted);
-  font-size: 0.8rem;
-  text-decoration: none;
-  transition: color 0.2s;
-}
-.footer__contact:hover { color: var(--c-accent); }
-.footer__contact .label-tech { color: var(--c-accent); }
-.footer__bottom {
-  padding-top: 24px;
-  border-top: 1px solid var(--c-border);
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  justify-content: space-between;
-}
-@media (min-width: 768px) {
-  .footer__bottom { flex-direction: row; align-items: center; }
-}
+.footer { background: var(--c-bg2); border-top: 1px solid var(--c-border); padding: 80px 0 0; position: relative; overflow: hidden; }
+.brand { display: flex; align-items: center; margin-bottom: 22px; }
+.brand__logo { height: 42px; width: auto; }
+.brand__logo--light { display: none; }
+:global(:root:not(.dark)) .brand__logo--dark { display: none; }
+:global(:root:not(.dark)) .brand__logo--light { display: block; }
+.footer__top { display: grid; grid-template-columns: 1fr; gap: 48px; padding-bottom: 56px; border-bottom: 1px solid var(--c-border); }
+@media (min-width: 860px){ .footer__top { grid-template-columns: 1.6fr 1fr 1fr; } }
+.footer__brand p { color: var(--c-muted); max-width: 320px; font-size: 0.95rem; }
+.footer__col h4 { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--c-muted); margin-bottom: 20px; }
+.footer__col a, .footer__col p { display: block; color: var(--c-text); font-size: 0.92rem; margin-bottom: 12px; transition: color 0.25s; }
+.footer__col a:hover { color: var(--c-accent); }
+.footer__bigtv { font-size: clamp(4rem, 18vw, 16rem); line-height: 0.8; letter-spacing: 0.02em; color: var(--c-text); opacity: 0.04; text-align: center; padding: 30px 0 10px; user-select: none; white-space: nowrap; }
+.footer__bottom { display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; align-items: center; padding: 24px 0 30px; }
+.footer__bottom span { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.12em; color: var(--c-faint); text-transform: uppercase; }
+@media (max-width: 760px){ .footer { padding: 64px 0 0; } .footer__top { gap: 38px; padding-bottom: 44px; } }
+@media (max-width: 480px){ .footer__bottom { flex-direction: column; align-items: flex-start; gap: 8px; } }
 </style>

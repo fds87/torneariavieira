@@ -1,122 +1,199 @@
-/* ───── Light mode (default) ───── */
-:root {
-  --c-bg:       #F5F5F3;
-  --c-surface:  #FFFFFF;
-  --c-surface2: #EFEFED;
-  --c-accent:   #B8921E;
-  --c-steel:    #2E6A9A;
-  --c-text:     #1A1A1A;
-  --c-muted:    #777777;
-  --c-border:   #DDDDD8;
+/* ============================================================
+   Tornearia Vieira — main.css (redesign 2026)
+   Tokens + base + utilities globais.
+   Tema: classe .dark no <html> (useTheme.js). Default = DARK.
+   ============================================================ */
 
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600&display=swap');
+
+/* ───── Light (base) ───── */
+:root {
+  --c-bg:        #F5F5F3;
+  --c-bg2:       #EEEEEB;
+  --c-surface:   #FFFFFF;
+  --c-surface2:  #F1F1EE;
+  --c-elev:      #FFFFFF;
+  --c-accent:    #A8841A;
+  --c-accent-2:  #8A6D12;
+  --c-steel:     #2E6A9A;
+  --c-text:      #16161A;
+  --c-muted:     #6B6B68;
+  --c-faint:     #A6A6A1;
+  --c-border:    #DEDED9;
+  --c-border-2:  #CFCFC9;
+  --c-grid:      rgba(0,0,0,0.045);
   color-scheme: light;
+
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-body:    'Space Grotesk', sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
+
+  --max: 1320px;
+  --ease:      cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out:  cubic-bezier(0.16, 1, 0.3, 1);
+  --spring:    cubic-bezier(0.34, 1.4, 0.5, 1);
 }
 
-/* ───── Dark mode ───── */
+/* ───── Dark (override) ───── */
 :root.dark {
-  --c-bg:       #0A0A0A;
-  --c-surface:  #111111;
-  --c-surface2: #161616;
-  --c-accent:   #C8A96E;
-  --c-steel:    #4A7FA5;
-  --c-text:     #E8E8E8;
-  --c-muted:    #666666;
-  --c-border:   #222222;
-
+  --c-bg:        #0B0B0C;
+  --c-bg2:       #0F0F11;
+  --c-surface:   #141416;
+  --c-surface2:  #1B1B1E;
+  --c-elev:      #202024;
+  --c-accent:    #C8A96E;
+  --c-accent-2:  #E4CE9E;
+  --c-steel:     #5E92BE;
+  --c-text:      #ECEBE8;
+  --c-muted:     #8A8985;
+  --c-faint:     #5A5A57;
+  --c-border:    #26262A;
+  --c-border-2:  #34343A;
+  --c-grid:      rgba(200,169,110,0.055);
   color-scheme: dark;
 }
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+*::selection { background: var(--c-accent); color: var(--c-bg); }
+
+html { scroll-behavior: smooth; font-size: 17px; -webkit-text-size-adjust: 100%; }
 
 body {
   background: var(--c-bg);
   color: var(--c-text);
-  font-family: 'Inter', sans-serif;
-  font-weight: 500;
-  -webkit-font-smoothing: antialiased;
+  font-family: var(--font-body);
+  line-height: 1.6;
   overflow-x: hidden;
-  transition: background 0.35s ease, color 0.35s ease;
+  -webkit-font-smoothing: antialiased;
+  transition: background 0.5s var(--ease), color 0.5s var(--ease);
 }
 
-/* ───── Utility ───── */
-.font-display  { font-family: 'Bebas Neue', sans-serif; }
-.font-mono-tv  { font-family: 'JetBrains Mono', monospace; }
+a { color: inherit; text-decoration: none; }
+img { display: block; max-width: 100%; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+p, li { line-height: 1.7; }
 
-/* ───── Engineering grid ───── */
-.grid-bg {
+/* ───── Utilitários ───── */
+.font-display { font-family: var(--font-display); }
+.mono { font-family: var(--font-mono); }
+
+.shell { max-width: var(--max); margin: 0 auto; padding: 0 32px; }
+@media (max-width: 640px){ .shell { padding: 0 20px; } }
+
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 12px;
+  font-family: var(--font-mono);
+  font-size: 0.7rem; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--c-muted);
+}
+.eyebrow b { color: var(--c-accent); font-weight: 500; }
+.eyebrow .ln { width: 46px; height: 1px; background: var(--c-border-2); }
+
+.tag {
+  font-family: var(--font-mono);
+  font-size: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--c-muted);
+  padding: 5px 12px;
+  border: 1px solid var(--c-border);
+  transition: border-color 0.25s, color 0.25s, background 0.25s;
+}
+.tag:hover { border-color: var(--c-accent); color: var(--c-accent); }
+
+/* Botões chanfrados */
+.btn {
+  --chamfer: 9px;
+  position: relative;
+  display: inline-flex; align-items: center; gap: 12px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase;
+  padding: 16px 30px;
+  clip-path: polygon(var(--chamfer) 0, 100% 0, 100% calc(100% - var(--chamfer)), calc(100% - var(--chamfer)) 100%, 0 100%, 0 var(--chamfer));
+  transition: transform 0.3s var(--spring), background 0.3s var(--ease), color 0.3s var(--ease);
+  will-change: transform;
+}
+.btn .arrow { transition: transform 0.3s var(--ease-out); }
+.btn:hover .arrow { transform: translateX(5px); }
+.btn--gold { background: var(--c-accent); color: #fff; }
+.btn--gold:hover { background: var(--c-accent-2); }
+:root.dark .btn--gold { color: #0B0B0C; }
+:root.dark .btn--gold:hover { background: var(--c-accent-2); }
+.btn--ghost { background: transparent; color: var(--c-text); border: 1px solid var(--c-border-2); padding: 15px 29px; }
+.btn--ghost:hover { border-color: var(--c-accent); color: var(--c-accent); }
+
+/* Section frame */
+.section { position: relative; padding: 120px 0; overflow: hidden; }
+.section--alt { background: var(--c-surface); }
+.section__head { margin-bottom: 64px; }
+.section__title {
+  font-family: var(--font-display);
+  font-size: clamp(2.6rem, 6.5vw, 6rem);
+  line-height: 0.9; letter-spacing: 0.01em; margin-top: 18px;
+}
+.section__title .steel { color: var(--c-steel); }
+.section__title .gold { color: var(--c-accent); }
+
+/* Grid de engenharia */
+.grid-layer {
+  position: absolute; inset: 0; pointer-events: none; z-index: 0;
   background-image:
-    linear-gradient(var(--c-border) 1px, transparent 1px),
-    linear-gradient(90deg, var(--c-border) 1px, transparent 1px);
-  background-size: 60px 60px;
-}
-:root.dark .grid-bg {
-  background-image:
-    linear-gradient(rgba(200,169,110,0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(200,169,110,0.04) 1px, transparent 1px);
+    linear-gradient(var(--c-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--c-grid) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse 100% 80% at 50% 30%, #000 40%, transparent 100%);
 }
 
-/* ───── Chamfered buttons ───── */
-.btn-gold {
-  display: inline-block;
-  background: var(--c-accent);
-  color: #FFFFFF;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.7rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  padding: 14px 32px;
-  clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
-  border: none;
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s;
-  text-decoration: none;
-}
-.btn-gold:hover { background: #9A7818; }
-:root.dark .btn-gold { color: #0A0A0A; }
-:root.dark .btn-gold:hover { background: #D9BC87; }
+/* Reveal on scroll (usa diretiva v-reveal -> classe .in) */
+.reveal { opacity: 0; transform: translateY(38px); transition: opacity 0.8s var(--ease-out), transform 0.8s var(--ease-out); }
+.reveal.in { opacity: 1; transform: none; }
+.reveal[data-d="1"]{ transition-delay: 0.08s; }
+.reveal[data-d="2"]{ transition-delay: 0.16s; }
+.reveal[data-d="3"]{ transition-delay: 0.24s; }
+.reveal[data-d="4"]{ transition-delay: 0.32s; }
+@media (prefers-reduced-motion: reduce){ .reveal { opacity: 1; transform: none; } }
 
-.btn-outline-gold {
-  display: inline-block;
-  background: transparent;
-  color: var(--c-accent);
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.7rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  padding: 14px 32px;
-  clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
-  border: 1px solid var(--c-accent);
-  cursor: pointer;
-  transition: all 0.25s;
-  text-decoration: none;
+/* Progress bar + reticle (montados no layout) */
+.scroll-progress {
+  position: fixed; top: 0; left: 0; height: 2px; width: 0;
+  background: linear-gradient(90deg, var(--c-accent), var(--c-accent-2));
+  z-index: 300; transition: width 0.1s linear;
 }
-.btn-outline-gold:hover {
-  background: var(--c-accent);
-  color: #FFFFFF;
+.reticle {
+  position: fixed; top: 0; left: 0; z-index: 290;
+  width: 38px; height: 38px; margin: -19px 0 0 -19px;
+  pointer-events: none; mix-blend-mode: difference;
+  opacity: 0; transition: opacity 0.3s, transform 0.18s var(--ease-out);
 }
-:root.dark .btn-outline-gold:hover { color: #0A0A0A; }
+.reticle.on { opacity: 0.9; }
+.reticle::before, .reticle::after { content: ''; position: absolute; background: #fff; }
+.reticle::before { left: 50%; top: 0; width: 1px; height: 100%; transform: translateX(-0.5px); }
+.reticle::after { top: 50%; left: 0; height: 1px; width: 100%; transform: translateY(-0.5px); }
+.reticle i { position: absolute; inset: 12px; border: 1px solid #fff; border-radius: 50%; transition: inset 0.2s var(--ease-out); }
+@media (hover: none){ .reticle { display: none; } }
 
-/* ───── Body text weight boost ───── */
-p, li, span:not(.label-tech) {
-  font-weight: 500;
+/* WhatsApp flutuante */
+.wa {
+  position: fixed; right: 24px; bottom: 24px; z-index: 150;
+  width: 56px; height: 56px; border-radius: 50%;
+  background: #25D366; color: #fff; display: grid; place-items: center;
+  box-shadow: 0 8px 30px rgba(37,211,102,0.4);
+  transform: translateY(120px); transition: transform 0.5s var(--spring);
 }
+.wa.show { transform: translateY(0); }
+.wa:hover { transform: scale(1.08); }
+.wa::after { content:''; position:absolute; inset:0; border-radius:50%; border:2px solid #25D366; animation: ring 2s ease-out infinite; }
+@keyframes ring { 0%{ transform: scale(1); opacity:0.6;} 100%{ transform: scale(1.7); opacity:0;} }
 
-/* ───── Section label ───── */
-.label-tech {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.7rem;
-  letter-spacing: 0.2em;
-  color: var(--c-accent);
-  text-transform: uppercase;
-}
-
-/* ───── Chamfered card ───── */
-.card-cut {
-  clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
-}
-
-/* ───── Scrollbar ───── */
-::-webkit-scrollbar { width: 3px; }
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: var(--c-bg); }
 ::-webkit-scrollbar-thumb { background: var(--c-accent); }
+
+/* ───── Responsivo global ───── */
+@media (max-width: 900px){
+  html { font-size: 16px; }
+  .section { padding: 84px 0; }
+  .section__head { margin-bottom: 46px; }
+}
+@media (max-width: 480px){
+  .section__title { font-size: clamp(2.3rem, 11vw, 3.4rem); }
+}

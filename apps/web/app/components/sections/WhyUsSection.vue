@@ -1,50 +1,24 @@
 <template>
-  <section id="whyus" class="whyus">
-    <TechBg />
-    <div class="whyus__inner">
-
-      <div class="section-head__label">
-        <span class="label-tech" style="color: var(--c-accent)">//</span>
-        <span class="label-tech" style="color: var(--c-muted)">03 — Por que nós</span>
-        <div class="section-head__line"></div>
+  <section id="whyus" class="section section--alt">
+    <div class="shell">
+      <div class="section__head" v-reveal>
+        <span class="eyebrow"><b>//</b> 03 — Por que nós <span class="ln"></span></span>
+        <h2 class="section__title">EXCELÊNCIA<br /><span class="steel">EM CADA PEÇA</span></h2>
       </div>
 
-      <h2 class="whyus__title font-display">
-        EXCELÊNCIA<br/>
-        <span style="color: var(--c-steel)">EM CADA PEÇA</span>
-      </h2>
-
-      <div class="whyus__grid">
-        <div v-for="(p, i) in pillars" :key="i" class="pillar">
-          <div class="pillar__icon-box">
-            <svg v-if="p.icon === 'precision'" width="22" height="22" viewBox="0 0 24 24" fill="none">
-              <circle cx="12" cy="12" r="9" stroke="#C8A96E" stroke-width="1"/>
-              <circle cx="12" cy="12" r="3" stroke="#C8A96E" stroke-width="1"/>
-              <line x1="12" y1="3" x2="12" y2="6" stroke="#C8A96E" stroke-width="1"/>
-              <line x1="12" y1="18" x2="12" y2="21" stroke="#C8A96E" stroke-width="1"/>
-              <line x1="3" y1="12" x2="6" y2="12" stroke="#C8A96E" stroke-width="1"/>
-              <line x1="18" y1="12" x2="21" y2="12" stroke="#C8A96E" stroke-width="1"/>
-            </svg>
-            <svg v-if="p.icon === 'craft'" width="22" height="22" viewBox="0 0 24 24" fill="none">
-              <path d="M14.5 4L20 9.5L9.5 20H4V14.5L14.5 4Z" stroke="#C8A96E" stroke-width="1" stroke-linejoin="round"/>
-              <line x1="10" y1="14" x2="14" y2="10" stroke="#C8A96E" stroke-width="1"/>
-            </svg>
-            <svg v-if="p.icon === 'deadline'" width="22" height="22" viewBox="0 0 24 24" fill="none">
-              <rect x="3" y="5" width="18" height="16" stroke="#C8A96E" stroke-width="1"/>
-              <line x1="3" y1="9" x2="21" y2="9" stroke="#C8A96E" stroke-width="1"/>
-              <line x1="8" y1="3" x2="8" y2="7" stroke="#C8A96E" stroke-width="1"/>
-              <line x1="16" y1="3" x2="16" y2="7" stroke="#C8A96E" stroke-width="1"/>
-              <path d="M12 13V17H15" stroke="#C8A96E" stroke-width="1" stroke-linecap="round"/>
-            </svg>
+      <div class="pillars">
+        <div v-for="(p, i) in pillars" :key="i" class="pillar" v-reveal :data-d="i">
+          <div class="pillar__icon">
+            <svg v-if="p.icon === 'precision'" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="12" cy="12" r="9" /><circle cx="12" cy="12" r="3" /><line x1="12" y1="3" x2="12" y2="6" /><line x1="12" y1="18" x2="12" y2="21" /><line x1="3" y1="12" x2="6" y2="12" /><line x1="18" y1="12" x2="21" y2="12" /></svg>
+            <svg v-else-if="p.icon === 'craft'" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M14.5 4L20 9.5L9.5 20H4V14.5L14.5 4Z" stroke-linejoin="round" /><line x1="10" y1="14" x2="14" y2="10" /></svg>
+            <svg v-else width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3" y="5" width="18" height="16" /><line x1="3" y1="9" x2="21" y2="9" /><line x1="8" y1="3" x2="8" y2="7" /><line x1="16" y1="3" x2="16" y2="7" /><path d="M12 13V17H15" stroke-linecap="round" /></svg>
           </div>
-
-          <div class="pillar__index label-tech" style="font-size:0.6rem; color: var(--c-muted); margin-bottom:8px">0{{ i + 1 }}</div>
-          <h3 class="pillar__title font-display">{{ p.title }}</h3>
-          <p class="pillar__desc">{{ p.description }}</p>
+          <div class="pillar__n">0{{ i + 1 }}</div>
+          <h3 class="pillar__t font-display">{{ p.title }}</h3>
+          <p class="pillar__d">{{ p.description }}</p>
           <div class="pillar__bar"></div>
         </div>
       </div>
-
     </div>
   </section>
 </template>
@@ -54,82 +28,17 @@ import { pillars } from '~/data/content.js'
 </script>
 
 <style scoped>
-.whyus {
-  position: relative;
-  background: var(--c-surface);
-  padding: 96px 0;
-  overflow: hidden;
-}
-.whyus__inner {
-  position: relative; z-index: 2;
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 0 32px;
-}
-.section-head__label {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-.section-head__line {
-  flex: 1;
-  height: 1px;
-  background: rgba(200,169,110,0.15);
-}
-.whyus__title {
-  font-size: clamp(2.2rem, 5vw, 4.5rem);
-  line-height: 0.92;
-  letter-spacing: 0.02em;
-  color: var(--c-text);
-  margin-bottom: 56px;
-}
-.whyus__grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1px;
-  background: var(--c-border);
-}
-@media (min-width: 768px) {
-  .whyus__grid { grid-template-columns: repeat(3, 1fr); }
-}
-.pillar {
-  background: var(--c-surface);
-  padding: 36px 32px 40px;
-  transition: background 0.3s;
-}
+.pillars { display: grid; grid-template-columns: 1fr; gap: 1px; background: var(--c-border); margin-top: 14px; }
+@media (min-width: 768px){ .pillars { grid-template-columns: repeat(3,1fr); } }
+.pillar { background: var(--c-surface); padding: 40px 34px 44px; transition: background 0.35s; }
 .pillar:hover { background: var(--c-surface2); }
-.pillar__icon-box {
-  width: 48px; height: 48px;
-  border: 1px solid var(--c-border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 28px;
-  transition: border-color 0.3s;
-}
-.pillar:hover .pillar__icon-box { border-color: rgba(200,169,110,0.4); }
-.pillar__title {
-  font-size: 1.5rem;
-  letter-spacing: 0.04em;
-  color: var(--c-text);
-  margin-bottom: 12px;
-  transition: color 0.3s;
-  line-height: 1.1;
-}
-.pillar:hover .pillar__title { color: var(--c-accent); }
-.pillar__desc {
-  color: var(--c-muted);
-  font-size: 0.875rem;
-  font-weight: 500;
-  line-height: 1.7;
-  margin-bottom: 24px;
-}
-.pillar__bar {
-  width: 0;
-  height: 1px;
-  background: var(--c-accent);
-  transition: width 0.5s;
-}
-.pillar:hover .pillar__bar { width: 48px; }
+.pillar__icon { width: 54px; height: 54px; border: 1px solid var(--c-border-2); display: grid; place-items: center; margin-bottom: 28px; color: var(--c-accent); transition: border-color 0.3s, transform 0.4s var(--spring); }
+.pillar:hover .pillar__icon { border-color: var(--c-accent); transform: translateY(-4px); }
+.pillar__n { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.16em; color: var(--c-faint); margin-bottom: 10px; }
+.pillar__t { font-size: 1.55rem; letter-spacing: 0.04em; margin-bottom: 12px; transition: color 0.3s; }
+.pillar:hover .pillar__t { color: var(--c-accent); }
+.pillar__d { color: var(--c-muted); font-size: 0.97rem; }
+.pillar__bar { width: 0; height: 2px; background: var(--c-accent); margin-top: 24px; transition: width 0.6s var(--ease-out); }
+.pillar:hover .pillar__bar { width: 54px; }
+@media (max-width: 760px){ .pillar { padding: 32px 26px 36px; } }
 </style>

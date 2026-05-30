@@ -1,8 +1,25 @@
+export type ProductCategory =
+  | 'injetora'
+  | 'bucha'
+  | 'eixo'
+  | 'conjunto'
+  | 'mola'
+  | 'cabecote'
+  | 'peca'
+  | 'servico'
+  | 'outros'
+  // legados (compatibilidade)
+  | 'espeto'
+  | 'churrasqueira'
+  | 'grelha'
+  | 'acessorio'
+  | 'kit'
+
 export interface Product {
   id: number
   slug: string
   name: string
-  category: 'espeto' | 'churrasqueira' | 'grelha' | 'acessorio' | 'kit'
+  category: ProductCategory
   description: string
   material: string
   price: number

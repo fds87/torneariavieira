@@ -1,6 +1,6 @@
 import { ref, watch, onMounted } from 'vue'
 
-const isDark = ref(false)
+const isDark = ref(true) // default DARK
 
 function applyTheme(dark) {
   if (process.client) {
@@ -15,7 +15,7 @@ function toggleTheme() {
 
 function initTheme() {
   const saved = localStorage.getItem('theme')
-  isDark.value = saved === 'dark'
+  isDark.value = saved ? saved === 'dark' : true // sem preferência salva => dark
   applyTheme(isDark.value)
 }
 
