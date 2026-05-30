@@ -48,7 +48,6 @@ export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.hook('app:mounted', () => {
     const prog = document.querySelector<HTMLElement>('.scroll-progress')
     const wa = document.querySelector<HTMLElement>('.wa')
-    const reticle = document.querySelector<HTMLElement>('.reticle')
 
     const onScroll = () => {
       const y = window.scrollY
@@ -58,18 +57,6 @@ export default defineNuxtPlugin((nuxtApp) => {
     }
     window.addEventListener('scroll', onScroll, { passive: true })
     onScroll()
-
-    /* Reticle (mira) — só desktop com ponteiro fino */
-    if (reticle && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
-      const dot = reticle.querySelector('i') as HTMLElement
-      window.addEventListener('mousemove', (e) => {
-        reticle.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`
-        reticle.classList.add('on')
-        const grow = (e.target as HTMLElement).closest('a, button, [data-magnetic], .svc, .pcard')
-        if (dot) dot.style.inset = grow ? '7px' : '12px'
-      })
-      document.addEventListener('mouseleave', () => reticle.classList.remove('on'))
-    }
 
     /* Botões magnéticos */
     document.addEventListener('mousemove', (e) => {

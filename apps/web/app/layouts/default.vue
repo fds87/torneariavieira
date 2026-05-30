@@ -11,7 +11,6 @@ onMounted(() => { auth.refreshToken() })
   <div class="page-wrap">
     <!-- chrome global -->
     <div class="scroll-progress"></div>
-    <div class="reticle"><i></i></div>
 
     <AppHeader />
     <slot />
