@@ -4,7 +4,7 @@
     <div class="shell">
       <div class="about__grid">
         <div v-reveal>
-          <span class="eyebrow"><b>//</b> 02 — Sobre <span class="ln"></span></span>
+          <span class="eyebrow"><b>//</b> 03 — Sobre <span class="ln"></span></span>
           <h2 class="section__title" style="margin-bottom:8px">SOLUÇÕES DE<br /><span class="gold">USINAGEM</span><br />COM PRECISÃO</h2>
           <div class="about__body">
             <p>A Tornearia Vieira atua na fabricação de peças industriais sob desenho, com foco em usinagem de alta precisão, recuperação de componentes e fabricação de ferramentas especiais.</p>
@@ -28,7 +28,14 @@
           </svg>
           <div class="about__chip mono">SÃO JOSÉ DOS PINHAIS · PR</div>
           <div class="about__frame">
-            <img src="https://torneariavieiraoficial.com.br/wp-content/uploads/2025/11/ChatGPT-Image-9-de-nov.-de-2025-18_57_22-1024x683.png" alt="Oficina Tornearia Vieira" loading="lazy" />
+            <div class="about__ph" aria-hidden="true">
+              <svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.7">
+                <circle cx="12" cy="12" r="9" /><circle cx="12" cy="12" r="3" />
+                <line x1="12" y1="1.5" x2="12" y2="5" /><line x1="12" y1="19" x2="12" y2="22.5" />
+                <line x1="1.5" y1="12" x2="5" y2="12" /><line x1="19" y1="12" x2="22.5" y2="12" />
+              </svg>
+              <span class="mono">SÃO JOSÉ DOS PINHAIS · PR</span>
+            </div>
           </div>
           <div class="about__deco"></div>
         </div>
@@ -54,6 +61,8 @@
 .about__frame { position: relative; overflow: hidden; clip-path: polygon(0 0, 100% 0, 100% 86%, 86% 100%, 0 100%); border: 1px solid var(--c-border); }
 .about__frame img { width: 100%; height: 520px; object-fit: cover; transition: transform 0.9s var(--ease-out); }
 .about__media:hover .about__frame img { transform: scale(1.05); }
+.about__ph { width: 100%; height: 520px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; background: var(--c-bg2); color: var(--c-faint); }
+.about__ph .mono { font-size: 0.6rem; letter-spacing: 0.16em; color: var(--c-muted); }
 .about__ring { position: absolute; inset: -4%; color: var(--c-accent); pointer-events: none; }
 .about__ring .spin { transform-origin: center; animation: spin 80s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
@@ -63,7 +72,7 @@
 
 @media (max-width: 760px){
   .about__grid { gap: 44px; }
-  .about__frame img { height: 380px; }
+  .about__frame img, .about__ph { height: 380px; }
   .about__chip { left: 0; font-size: 0.5rem; }
 }
 </style>

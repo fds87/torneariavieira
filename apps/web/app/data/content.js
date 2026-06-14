@@ -25,7 +25,7 @@ export const services = [
     title: 'Componentes para Injetoras',
     description: 'Fabricação de ponteiras, buchas e eixos sob medida em aço de alta qualidade. Tolerâncias micrométricas para máxima performance em injeção.',
     material: 'Aço de alta qualidade',
-    image: 'https://torneariavieiraoficial.com.br/wp-content/uploads/2025/11/ponteira-com-anel-de-bloqueio-2.png',
+    image: null,
     tags: ['Ponteiras', 'Buchas', 'Eixos'],
   },
   {
@@ -33,7 +33,7 @@ export const services = [
     title: 'Sacadores Especiais',
     description: 'Conjuntos mecânicos em aço temperado e usinado com precisão. Desenvolvidos sob especificação técnica para aplicações industriais exigentes.',
     material: 'Aço temperado',
-    image: 'https://torneariavieiraoficial.com.br/wp-content/uploads/2025/11/sacador.png',
+    image: null,
     tags: ['Aço temperado', 'Sob medida'],
   },
   {
@@ -41,7 +41,7 @@ export const services = [
     title: 'Buchas de Bronze',
     description: 'Ligas TM620 e especiais com tolerâncias controladas. Alta resistência ao desgaste para aplicações em movimento contínuo.',
     material: 'Bronze TM620',
-    image: 'https://torneariavieiraoficial.com.br/wp-content/uploads/2025/11/buchas-de-bronze.png',
+    image: null,
     tags: ['Bronze TM620', 'Alta durabilidade'],
   },
 ]

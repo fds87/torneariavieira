@@ -1,8 +1,11 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import type { Product } from '@/types/product'
 import { formatPrice } from '@/utils/format'
 
 const { product } = defineProps<{ product: Product }>()
+
+const imgFailed = ref(false)
 
 const categoryLabels: Record<string, string> = {
   injetora: 'Injetora',
@@ -27,7 +30,7 @@ const categoryLabels: Record<string, string> = {
       </svg>
       <span class="pcard__tag">{{ categoryLabels[product.category] ?? product.category }}</span>
       <span v-if="!product.inStock" class="pcard__enc">Sob encomenda</span>
-      <img v-if="product.imageUrl" :src="product.imageUrl" :alt="product.name" loading="lazy" />
+      <img v-if="product.imageUrl && !imgFailed" :src="product.imageUrl" :alt="product.name" loading="lazy" @error="imgFailed = true" />
       <div v-else class="pcard__ph">
         <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="3" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="21"/><line x1="3" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="21" y2="12"/></svg>
       </div>

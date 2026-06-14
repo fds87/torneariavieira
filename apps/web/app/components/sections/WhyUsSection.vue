@@ -2,7 +2,7 @@
   <section id="whyus" class="section section--alt">
     <div class="shell">
       <div class="section__head" v-reveal>
-        <span class="eyebrow"><b>//</b> 03 — Por que nós <span class="ln"></span></span>
+        <span class="eyebrow"><b>//</b> 04 — Por que nós <span class="ln"></span></span>
         <h2 class="section__title">EXCELÊNCIA<br /><span class="steel">EM CADA PEÇA</span></h2>
       </div>
 

@@ -3,7 +3,7 @@
     <div class="shell">
       <div class="contact__grid">
         <div v-reveal>
-          <span class="eyebrow"><b>//</b> 04 — Contato <span class="ln"></span></span>
+          <span class="eyebrow"><b>//</b> 05 — Contato <span class="ln"></span></span>
           <h2 class="section__title">FALE COM<br /><span class="gold">A GENTE</span></h2>
           <p class="contact__sub">Envie o desenho técnico ou descreva sua necessidade. Respondemos com orçamento detalhado em até 24h.</p>
 

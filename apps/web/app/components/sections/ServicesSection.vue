@@ -3,7 +3,7 @@
     <div class="shell">
       <div class="section__head svc-head" v-reveal>
         <div>
-          <span class="eyebrow"><b>//</b> 01 — Nossos Serviços <span class="ln"></span></span>
+          <span class="eyebrow"><b>//</b> 02 — Nossos Serviços <span class="ln"></span></span>
           <h2 class="section__title">FABRICAÇÃO<br /><span class="steel">SOB MEDIDA</span></h2>
         </div>
         <p>Cada peça produzida segue especificação técnica rigorosa. Matérias-primas certificadas, controle dimensional em todas as etapas.</p>
@@ -22,7 +22,20 @@
             <DimOverlay />
             <div class="svc__scan"></div>
             <span class="svc__badge">{{ s.material }}</span>
-            <img :src="s.image" :alt="s.title" loading="lazy" />
+            <img
+              v-if="s.image && !failed.has(s.id)"
+              :src="s.image"
+              :alt="s.title"
+              loading="lazy"
+              @error="failed.add(s.id)"
+            />
+            <div v-else class="svc__ph" aria-hidden="true">
+              <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8">
+                <circle cx="12" cy="12" r="9" /><circle cx="12" cy="12" r="3" />
+                <line x1="12" y1="1.5" x2="12" y2="5" /><line x1="12" y1="19" x2="12" y2="22.5" />
+                <line x1="1.5" y1="12" x2="5" y2="12" /><line x1="19" y1="12" x2="22.5" y2="12" />
+              </svg>
+            </div>
             <span class="svc__bignum font-display">{{ s.id }}</span>
           </div>
           <div class="svc__body">
@@ -39,7 +52,10 @@
 </template>
 
 <script setup>
+import { reactive } from 'vue'
 import { services } from '~/data/content.js'
+
+const failed = reactive(new Set())
 
 const quoteLink = (title) => `https://wa.me/5541998035540?text=${encodeURIComponent('Olá! Tenho interesse em: ' + title)}`
 </script>
@@ -64,6 +80,8 @@ const quoteLink = (title) => `https://wa.me/5541998035540?text=${encodeURICompon
 .svc--rev .svc__media { border-right: none; border-left: 1px solid var(--c-border); }
 .svc__media img { width: 100%; height: 100%; object-fit: contain; padding: 38px; transition: transform 0.7s var(--ease-out), filter 0.5s; filter: saturate(0.9); }
 .svc:hover .svc__media img { transform: scale(1.07) rotate(-1deg); filter: saturate(1.1); }
+.svc__ph { position: absolute; inset: 0; display: grid; place-items: center; color: var(--c-faint); transition: transform 0.7s var(--ease-out); }
+.svc:hover .svc__ph { transform: scale(1.07); }
 .svc__scan { position: absolute; left: 0; right: 0; height: 2px; top: -2px; background: linear-gradient(90deg, transparent, var(--c-accent), transparent); opacity: 0; }
 .svc:hover .svc__scan { opacity: 0.8; animation: scan 2.4s var(--ease) infinite; }
 @keyframes scan { 0%{ top: 0%;} 100%{ top: 100%;} }

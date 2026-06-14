@@ -1,9 +1,6 @@
 <template>
   <main>
     <HeroSection />
-    <ServicesSection />
-    <AboutSection />
-    <WhyUsSection />
 
     <!-- Preview do catálogo -->
     <section id="catalogo" class="section">
@@ -11,7 +8,7 @@
       <div class="shell">
         <div class="cat__head" v-reveal>
           <div>
-            <span class="eyebrow"><b>//</b> 05 — Catálogo Online <span class="ln"></span></span>
+            <span class="eyebrow"><b>//</b> 01 — Catálogo Online <span class="ln"></span></span>
             <h2 class="section__title">PEÇAS<br /><span class="gold">DISPONÍVEIS</span></h2>
           </div>
           <p>Componentes industriais usinados com precisão. Compre online com frete para todo o Brasil.</p>
@@ -29,6 +26,9 @@
       </div>
     </section>
 
+    <ServicesSection />
+    <AboutSection />
+    <WhyUsSection />
     <ContactSection />
   </main>
 </template>
