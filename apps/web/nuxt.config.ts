@@ -28,6 +28,27 @@ export default defineNuxtConfig({
     name: 'Tornearia Vieira',
   },
 
+  // Enumera as páginas de produto no build (busca os slugs da API ao vivo)
+  // para que sejam pré-renderizadas como HTML estático — essencial para
+  // SEO e descoberta por agentes de IA.
+  hooks: {
+    async 'nitro:config'(nitroConfig) {
+      try {
+        const res = await fetch(`${apiUrl}/api/products`)
+        if (!res.ok) return
+        const products = (await res.json()) as Array<{ slug: string }>
+        const routes = products.filter((p) => p.slug).map((p) => `/produto/${p.slug}`)
+        nitroConfig.prerender ||= {}
+        nitroConfig.prerender.routes = [...(nitroConfig.prerender.routes || []), ...routes]
+        // eslint-disable-next-line no-console
+        console.log(`[prerender] +${routes.length} rotas de produto`)
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.warn('[prerender] não foi possível buscar produtos da API:', e)
+      }
+    },
+  },
+
   routeRules: {
     '/admin/**': { ssr: false },
   },

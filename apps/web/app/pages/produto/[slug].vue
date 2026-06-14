@@ -4,8 +4,9 @@ import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { useProductStore } from '@/stores/products'
 import { useCartStore } from '@/stores/cart'
 import { formatPrice } from '@/utils/format'
-import type { Product } from '@/types/product'
 import { trackViewItem, trackAddToCart } from '@/composables/useAnalytics'
+import { useJsonLd } from '@/composables/useJsonLd'
+import { SITE_URL, business } from '@/lib/business'
 
 const route = useRoute()
 const router = useRouter()
@@ -14,7 +15,18 @@ const cart = useCartStore()
 
 const whatsapp = 'https://wa.me/5541998035540'
 
-const product = ref<Product | null>(null)
+const slug = computed(() => {
+  const raw = route.params.slug
+  return Array.isArray(raw) ? raw[0] : raw
+})
+
+// Carregado durante o prerender (SSG) para que o HTML estático já contenha
+// o produto — indexável por motores de busca e agentes de IA.
+const { data: product } = await useAsyncData(
+  () => `product-${slug.value}`,
+  () => productStore.fetchProduct(slug.value!),
+)
+
 const quantity = ref(1)
 const added = ref(false)
 
@@ -98,13 +110,74 @@ const customMsg = computed(() =>
   `Olá! Tenho interesse na peça "${product.value?.name ?? ''}". Gostaria de um orçamento sob desenho.`,
 )
 
-onMounted(async () => {
-  const rawSlug = route.params.slug
-  const slug = Array.isArray(rawSlug) ? rawSlug[0] : rawSlug
-  if (!slug) { router.replace('/'); return }
-  product.value = await productStore.fetchProduct(slug)
+// ── SEO + dados estruturados ──────────────────────────────────────────────────
+const canonical = computed(() => `${SITE_URL}/produto/${slug.value}`)
+const seoDescription = computed(() => {
+  const p = product.value
+  if (!p) return business.description
+  const base = p.description?.trim()
+    || `${p.name} — ${catLabel.value.toLowerCase()} usinado${p.material ? ' em ' + p.material : ''} com precisão. Fabricação sob desenho com frete para todo o Brasil.`
+  return base.length > 160 ? base.slice(0, 157).trimEnd() + '…' : base
+})
+const seoTitle = computed(() =>
+  product.value ? `${product.value.name} — ${catLabel.value} | Tornearia Vieira` : 'Produto | Tornearia Vieira',
+)
+
+useSeoMeta({
+  title: () => seoTitle.value,
+  description: () => seoDescription.value,
+  ogTitle: () => seoTitle.value,
+  ogDescription: () => seoDescription.value,
+  ogType: 'website',
+  ogUrl: () => canonical.value,
+  ogImage: () => gallery.value[0] ?? business.logo,
+  twitterCard: 'summary_large_image',
+  twitterTitle: () => seoTitle.value,
+  twitterDescription: () => seoDescription.value,
+})
+useHead({ link: [{ rel: 'canonical', href: () => canonical.value }] })
+
+if (product.value) {
+  const p = product.value
+  const inStock = p.inStock && p.price > 0
+  useJsonLd([
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Product',
+      name: p.name,
+      description: seoDescription.value,
+      sku: String(p.id),
+      category: catLabel.value,
+      image: gallery.value.length ? gallery.value : [business.logo],
+      ...(p.material ? { material: p.material } : {}),
+      brand: { '@type': 'Brand', name: business.name },
+      manufacturer: { '@id': `${SITE_URL}/#organization` },
+      offers: {
+        '@type': 'Offer',
+        url: canonical.value,
+        priceCurrency: 'BRL',
+        ...(inStock ? { price: p.price.toFixed(2) } : {}),
+        availability: inStock ? 'https://schema.org/InStock' : 'https://schema.org/PreOrder',
+        itemCondition: 'https://schema.org/NewCondition',
+        seller: { '@id': `${SITE_URL}/#organization` },
+      },
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Início', item: SITE_URL },
+        { '@type': 'ListItem', position: 2, name: 'Catálogo', item: `${SITE_URL}/catalogo` },
+        { '@type': 'ListItem', position: 3, name: p.name, item: canonical.value },
+      ],
+    },
+  ])
+}
+
+onMounted(() => {
   if (!product.value) { router.replace('/catalogo'); return }
-  trackViewItem({ id: product.value.id, name: product.value.name, price: product.value.price, category: product.value.category })
+  const p = product.value
+  trackViewItem({ id: p.id, name: p.name, price: p.price, category: p.category })
 })
 
 function addToCart() {

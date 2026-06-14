@@ -1,6 +1,6 @@
 export function usePageMeta(title: string, description?: string) {
   useHead({
-    title: `${title} | Brasa Premium`,
+    title: `${title} | Tornearia Vieira`,
     meta: description ? [{ name: 'description', content: description }] : [],
   })
 }

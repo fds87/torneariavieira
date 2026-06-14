@@ -35,10 +35,14 @@
 
 <script setup>
 import { useProductStore } from '@/stores/products'
-import { computed, onMounted } from 'vue'
+import { computed } from 'vue'
 
 const productStore = useProductStore()
-onMounted(() => { productStore.fetchProducts() })
+// SSG: produtos em destaque pré-renderizados no HTML estático da home.
+await useAsyncData('home-products', async () => {
+  await productStore.fetchProducts()
+  return productStore.products.length
+})
 const featuredProducts = computed(() => productStore.products.slice(0, 3))
 </script>
 

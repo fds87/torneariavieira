@@ -45,7 +45,9 @@
 
 <script setup lang="ts">
 import { useProductStore } from '@/stores/products'
-import { computed, onMounted, ref } from 'vue'
+import { computed, ref } from 'vue'
+import { useJsonLd } from '@/composables/useJsonLd'
+import { SITE_URL } from '@/lib/business'
 
 const store = useProductStore()
 const active = ref('all')
@@ -66,8 +68,54 @@ const filtered = computed(() =>
     : store.products.filter((p) => p.category === active.value),
 )
 
-onMounted(() => store.fetchProducts())
-useHead({ title: 'Catálogo — Tornearia Vieira' })
+// SSG: popula o catálogo durante o prerender para HTML indexável.
+await useAsyncData('catalog-products', async () => {
+  await store.fetchProducts()
+  return store.products.length
+})
+
+const seoDescription =
+  'Catálogo de peças usinadas com precisão: eixos, buchas, conjuntos mecânicos e componentes para injetoras. Peças de linha prontas para envio e fabricação sob desenho, com frete para todo o Brasil.'
+
+useSeoMeta({
+  title: 'Catálogo de Peças Usinadas — Tornearia Vieira',
+  description: seoDescription,
+  ogTitle: 'Catálogo de Peças Usinadas — Tornearia Vieira',
+  ogDescription: seoDescription,
+  ogType: 'website',
+  ogUrl: `${SITE_URL}/catalogo`,
+  twitterCard: 'summary_large_image',
+})
+useHead({ link: [{ rel: 'canonical', href: `${SITE_URL}/catalogo` }] })
+
+useJsonLd([
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Início', item: SITE_URL },
+      { '@type': 'ListItem', position: 2, name: 'Catálogo', item: `${SITE_URL}/catalogo` },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: 'Catálogo de Peças Usinadas — Tornearia Vieira',
+    url: `${SITE_URL}/catalogo`,
+    description: seoDescription,
+    isPartOf: { '@id': `${SITE_URL}/#website` },
+    mainEntity: {
+      '@type': 'ItemList',
+      numberOfItems: store.products.length,
+      itemListElement: store.products.map((p, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        url: `${SITE_URL}/produto/${p.slug}`,
+        name: p.name,
+      })),
+    },
+  },
+])
 </script>
 
 <style scoped>
