@@ -33,14 +33,16 @@ export const useAuthStore = defineStore('auth', () => {
         credentials: 'include',
         body: JSON.stringify(payload),
       })
-      const data = await res.json()
+      let data: Record<string, unknown> = {}
+      try { data = await res.json() } catch { /* não-JSON */ }
       if (!res.ok) {
-        error.value = data.error ?? 'Erro ao fazer login'
+        error.value = (data.error as string) ?? 'Erro ao fazer login'
         return false
       }
       setAuth(data as AuthResponse)
       return true
-    } catch {
+    } catch (e) {
+      console.error('[auth] login error:', e)
       error.value = 'Erro de conexão'
       return false
     } finally {
@@ -58,9 +60,10 @@ export const useAuthStore = defineStore('auth', () => {
         credentials: 'include',
         body: JSON.stringify(payload),
       })
-      const data = await res.json()
+      let data: Record<string, unknown> = {}
+      try { data = await res.json() } catch { /* não-JSON */ }
       if (!res.ok) {
-        error.value = data.error ?? 'Erro ao criar conta'
+        error.value = (data.error as string) ?? 'Erro ao criar conta'
         return false
       }
       setAuth(data as AuthResponse)
@@ -87,20 +90,21 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   async function refreshToken(): Promise<boolean> {
+    const alreadyLoggedIn = !!accessToken.value
     try {
       const res = await fetch(`${BASE()}/api/auth/refresh`, {
         method: 'POST',
         credentials: 'include',
       })
       if (!res.ok) {
-        clearAuth()
+        if (!alreadyLoggedIn) clearAuth()
         return false
       }
       const data = await res.json()
       setAuth(data as AuthResponse)
       return true
     } catch {
-      clearAuth()
+      if (!alreadyLoggedIn) clearAuth()
       return false
     }
   }

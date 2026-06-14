@@ -15,6 +15,11 @@ export type ProductCategory =
   | 'acessorio'
   | 'kit'
 
+export interface ProductImage {
+  url: string
+  key?: string
+}
+
 export interface Product {
   id: number
   slug: string
@@ -26,6 +31,7 @@ export interface Product {
   priceMin: number
   priceMax: number
   imageUrl: string | null
+  images?: ProductImage[] | null
   inStock: boolean
   createdAt: string
   weightG: number

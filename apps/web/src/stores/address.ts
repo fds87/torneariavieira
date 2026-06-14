@@ -82,16 +82,28 @@ export const useAddressStore = defineStore('address', () => {
     }
   }
 
-  async function createAddress(data: NewAddress, token: string): Promise<Address | null> {
-    const res = await fetch(`${(import.meta.env.VITE_API_URL ?? '').replace(/\/$/, '')}/api/account/addresses`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-      body: JSON.stringify(data),
-    })
-    if (!res.ok) return null
+  async function createAddress(data: NewAddress, token: string): Promise<{ address: Address } | { error: string } | null> {
+    let res: Response
+    try {
+      res = await fetch(`${(import.meta.env.VITE_API_URL ?? '').replace(/\/$/, '')}/api/account/addresses`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify(data),
+      })
+    } catch {
+      return { error: 'Sem ligação ao servidor. Verifique a sua internet.' }
+    }
+    if (!res.ok) {
+      let msg = `Erro ${res.status}`
+      try {
+        const body = await res.json() as { error?: string }
+        if (body.error) msg = body.error
+      } catch { /* ignore */ }
+      return { error: msg }
+    }
     const created = await res.json() as Address
     savedAddresses.value.push(created)
-    return created
+    return { address: created }
   }
 
   async function updateAddress(id: number, data: Partial<NewAddress>, token: string): Promise<Address | null> {

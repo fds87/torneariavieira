@@ -32,7 +32,7 @@ async function onSubmit() {
   <main class="container auth-page">
     <div class="auth-card">
       <h1 class="auth-title">Criar Conta</h1>
-      <p class="auth-sub">Faça parte da Brasa Premium</p>
+      <p class="auth-sub">Crie sua conta</p>
 
       <form class="auth-form" @submit.prevent="onSubmit">
         <div class="field">

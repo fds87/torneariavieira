@@ -23,14 +23,18 @@
 
         <!-- Conta -->
         <div v-if="auth.isLoggedIn" class="account" @mouseenter="dropdown = true" @mouseleave="dropdown = false">
-          <button class="account__avatar">{{ auth.user?.name?.[0]?.toUpperCase() }}</button>
+          <NuxtLink to="/conta" class="iconbtn" aria-label="Minha Conta">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+          </NuxtLink>
           <div v-show="dropdown" class="account__menu">
             <NuxtLink to="/conta" class="account__item" @click="dropdown = false">Minha Conta</NuxtLink>
             <NuxtLink to="/conta/pedidos" class="account__item" @click="dropdown = false">Pedidos</NuxtLink>
             <button class="account__item account__item--danger" @click="logout">Sair</button>
           </div>
         </div>
-        <NuxtLink v-else to="/conta/entrar" class="link account-link">Entrar</NuxtLink>
+        <NuxtLink v-else to="/conta/entrar" class="iconbtn" aria-label="Entrar">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        </NuxtLink>
 
         <!-- Tema -->
         <button class="iconbtn" @click="toggleTheme" :aria-label="isDark ? 'Modo claro' : 'Modo escuro'">
@@ -68,7 +72,7 @@ const cart = useCartStore()
 const auth = useAuthStore()
 const router = useRouter()
 
-const whatsapp = 'https://wa.me/5541999802662'
+const whatsapp = 'https://wa.me/5541998035540'
 const scrolled = ref(false)
 const mobileOpen = ref(false)
 const dropdown = ref(false)
@@ -141,11 +145,7 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
 }
 :global(:root.dark) .cart__badge { color: #0B0B0C; }
 
-.account { position: relative; display: none; }
-@media (min-width: 940px){ .account, .account-link { display: flex; } }
-.account-link { display: none; }
-.account__avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--c-accent); color: #fff; font-weight: 700; font-size: 14px; display: grid; place-items: center; }
-:global(:root.dark) .account__avatar { color: #0B0B0C; }
+.account { position: relative; display: flex; }
 .account__menu { position: absolute; top: 100%; right: 0; min-width: 168px; background: var(--c-surface); border: 1px solid var(--c-border); z-index: 10; }
 .account__item { display: block; width: 100%; text-align: left; padding: 11px 16px; font-family: var(--font-mono); font-size: 0.64rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--c-muted); transition: background 0.2s, color 0.2s; }
 .account__item:hover { background: var(--c-surface2); color: var(--c-text); }

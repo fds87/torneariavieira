@@ -77,6 +77,7 @@ async function initAddresses() {
       city: def.city,
       state: def.state,
     })
+    recalculateFreight(def.cep)
   }
 }
 
@@ -92,6 +93,7 @@ function selectSavedAddress(addr: typeof address.savedAddresses[0]) {
     city: addr.city,
     state: addr.state,
   })
+  recalculateFreight(addr.cep)
 }
 
 function toggleNewAddressForm() {
@@ -109,6 +111,15 @@ function toggleNewAddressForm() {
 function onNewAddressChange(val: ShippingAddress) {
   newAddress.value = val
   address.setCurrentAddress(val)
+  if (val.cep.replace(/\D/g, '').length === 8) {
+    recalculateFreight(val.cep)
+  }
+}
+
+function recalculateFreight(cep: string) {
+  const digits = cep.replace(/\D/g, '')
+  if (digits.length !== 8) return
+  freight.calculate(digits, cart.items.map((i) => ({ productId: i.productId, quantity: i.quantity })))
 }
 
 // ---------------------------------------------------------------------------
@@ -128,6 +139,32 @@ async function goToPaymentStep() {
       error.value = 'E-mail invalido.'
       return
     }
+  }
+
+  // Persiste novo endereço no banco antes de avançar
+  if (auth.isLoggedIn && showNewAddressForm.value && newAddress.value && auth.accessToken) {
+    const addr = newAddress.value
+    if (!addr.cep || !addr.street || !addr.number || !addr.neighborhood || !addr.city || !addr.state) {
+      error.value = 'Preencha todos os campos obrigatórios do endereço (CEP, logradouro, número, bairro, cidade e UF).'
+      return
+    }
+    const result = await address.createAddress({
+      label: `${addr.street}, ${addr.number}`,
+      cep: addr.cep,
+      street: addr.street,
+      number: addr.number,
+      complement: addr.complement || null,
+      neighborhood: addr.neighborhood,
+      city: addr.city,
+      state: addr.state,
+      isDefault: address.savedAddresses.length === 0,
+    }, auth.accessToken)
+    if (!result || 'error' in result) {
+      error.value = result && 'error' in result ? result.error : 'Erro ao salvar endereço. Tente novamente.'
+      return
+    }
+    selectedAddressId.value = result.address.id
+    showNewAddressForm.value = false
   }
 
   checkout.syncAddressToCustomer()
@@ -171,7 +208,7 @@ watch(step, async (newStep) => {
 
     bricksController.value = await mp.bricks().create('payment', 'payment-brick-container', {
       initialization: {
-        amount: cart.totalAmount,
+        amount: orderTotal.value,
       },
       customization: {
         paymentMethods: {
@@ -238,7 +275,7 @@ async function processPayment(formData: Record<string, unknown>): Promise<void> 
             }
           : {},
         userId: auth.user?.id,
-        addressId: (addr as Record<string, unknown>)?.id as number | undefined,
+        addressId: selectedAddressId.value ?? undefined,
         formData,
       }),
     })

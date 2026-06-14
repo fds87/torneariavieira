@@ -21,13 +21,17 @@ function isSecure(env: Bindings): boolean {
 
 function refreshCookieHeader(raw: string, expiresAt: Date, env: Bindings): string {
   const expires = expiresAt.toUTCString()
-  const secure = isSecure(env) ? '; Secure' : ''
-  return `${COOKIE_NAME}=${raw}; HttpOnly${secure}; SameSite=Lax; Path=/api/auth/refresh; Expires=${expires}`
+  if (isSecure(env)) {
+    return `${COOKIE_NAME}=${raw}; HttpOnly; Secure; SameSite=None; Path=/api/auth/refresh; Expires=${expires}`
+  }
+  return `${COOKIE_NAME}=${raw}; HttpOnly; SameSite=Lax; Path=/api/auth/refresh; Expires=${expires}`
 }
 
 function clearCookieHeader(env: Bindings): string {
-  const secure = isSecure(env) ? '; Secure' : ''
-  return `${COOKIE_NAME}=; HttpOnly${secure}; SameSite=Lax; Path=/api/auth/refresh; Max-Age=0`
+  if (isSecure(env)) {
+    return `${COOKIE_NAME}=; HttpOnly; Secure; SameSite=None; Path=/api/auth/refresh; Max-Age=0`
+  }
+  return `${COOKIE_NAME}=; HttpOnly; SameSite=Lax; Path=/api/auth/refresh; Max-Age=0`
 }
 
 const auth = new Hono<{ Bindings: Bindings }>()

@@ -2,6 +2,7 @@ import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { secureHeaders } from 'hono/secure-headers'
 import productsRoutes from './routes/products.js'
+import uploadsRoutes from './routes/uploads.js'
 import ordersRoutes from './routes/orders.js'
 import paymentsRoutes from './routes/payments.js'
 import adminRoutes from './routes/admin.js'
@@ -24,7 +25,8 @@ app.use(
         origin.startsWith('http://127.0.0.1:') ||
         origin === 'https://torneariavieiraoficial.com.br' ||
         origin === 'https://www.torneariavieiraoficial.com.br' ||
-        origin === 'https://torneariavieira.pages.dev'
+        origin === 'https://torneariavieira.pages.dev' ||
+        origin.endsWith('.torneariavieira.pages.dev')
       ) {
         return origin
       }
@@ -47,13 +49,17 @@ app.use('*', secureHeaders({
 }))
 
 app.use('/api/*', async (c, next) => {
+  // Upload de imagens precisa de um limite maior que o padrão (1 MB).
+  const isUpload = c.req.path === '/api/admin/uploads'
+  const limit = isUpload ? 10_485_760 : 1_048_576
   const contentLength = Number(c.req.header('content-length') ?? 0)
-  if (contentLength > 1_048_576) return c.json({ error: 'Payload muito grande' }, 413)
+  if (contentLength > limit) return c.json({ error: 'Payload muito grande' }, 413)
   await next()
 })
 
 app.get('/api/health', (c) => c.json({ status: 'ok' }))
 app.route('/api/products', productsRoutes)
+app.route('/api/uploads', uploadsRoutes)
 app.route('/api/orders', ordersRoutes)
 app.route('/api/payments', paymentsRoutes)
 app.route('/api/admin', adminRoutes)

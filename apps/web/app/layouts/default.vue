@@ -1,10 +1,5 @@
 <script setup lang="ts">
-import { useAuthStore } from '@/stores/auth'
-
-const auth = useAuthStore()
-const whatsapp = 'https://wa.me/5541999802662'
-
-onMounted(() => { auth.refreshToken() })
+const whatsapp = 'https://wa.me/5541998035540'
 </script>
 
 <template>

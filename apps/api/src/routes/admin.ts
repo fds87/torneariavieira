@@ -1,7 +1,7 @@
 import { Hono } from 'hono'
 import { getDb } from '../db/index.js'
 import { orders, orderItems, products, ORDER_STATUSES } from '../db/schema.js'
-import type { OrderStatus } from '../db/schema.js'
+import type { OrderStatus, ProductImage } from '../db/schema.js'
 import { eq, desc } from 'drizzle-orm'
 import type { Bindings } from '../types.js'
 
@@ -34,6 +34,58 @@ app.use('*', async (c, next) => {
 })
 
 app.post('/login', (c) => c.json({ ok: true }))
+
+// Normaliza/valida o array de imagens vindo do cliente.
+function sanitizeImages(input: unknown): ProductImage[] {
+  if (!Array.isArray(input)) return []
+  return input
+    .filter((i): i is Record<string, unknown> => !!i && typeof i === 'object')
+    .map((i) => ({
+      url: typeof i.url === 'string' ? i.url : '',
+      ...(typeof i.key === 'string' ? { key: i.key } : {}),
+    }))
+    .filter((i) => i.url.length > 0)
+    .slice(0, 12)
+}
+
+// ── Upload de imagens (R2) ─────────────────────────────────────────────────────
+
+app.post('/uploads', async (c) => {
+  try {
+    if (!c.env.BUCKET) return c.json({ error: 'Armazenamento indisponivel' }, 503)
+
+    const form = await c.req.formData().catch(() => null)
+    const file = form?.get('file')
+    if (!(file instanceof File)) return c.json({ error: 'Arquivo ausente' }, 400)
+    if (!file.type.startsWith('image/')) return c.json({ error: 'Tipo de arquivo invalido' }, 400)
+    if (file.size > 10_485_760) return c.json({ error: 'Imagem muito grande (max 10MB)' }, 413)
+
+    const ext = (file.name.split('.').pop() ?? 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg'
+    const key = `products/${crypto.randomUUID()}.${ext}`
+
+    await c.env.BUCKET.put(key, await file.arrayBuffer(), {
+      httpMetadata: { contentType: file.type },
+    })
+
+    const base = (c.env.APP_BASE_URL ?? '').replace(/\/$/, '')
+    return c.json({ url: `${base}/api/uploads/${key}`, key }, 201)
+  } catch (err) {
+    console.error('[admin POST /uploads]', err)
+    return c.json({ error: 'Erro ao enviar imagem' }, 500)
+  }
+})
+
+app.delete('/uploads/:key{.+}', async (c) => {
+  try {
+    if (!c.env.BUCKET) return c.json({ error: 'Armazenamento indisponivel' }, 503)
+    const key = c.req.param('key')
+    if (key) await c.env.BUCKET.delete(key)
+    return c.json({ ok: true })
+  } catch (err) {
+    console.error('[admin DELETE /uploads/:key]', err)
+    return c.json({ error: 'Erro ao remover imagem' }, 500)
+  }
+})
 
 // ── Orders ────────────────────────────────────────────────────────────────────
 
@@ -138,12 +190,14 @@ app.post('/products', async (c) => {
       priceMin: number
       priceMax: number
       imageUrl?: string
+      images?: ProductImage[]
       inStock?: boolean
     }>().catch(() => null)
 
     if (!body) return c.json({ error: 'Corpo da requisicao invalido' }, 400)
 
     const { slug, name, category, description, material, price, priceMin, priceMax, imageUrl, inStock } = body
+    const images = sanitizeImages(body.images)
 
     if (!slug?.trim() || !name?.trim() || !category?.trim()) {
       return c.json({ error: 'slug, name e category sao obrigatorios' }, 400)
@@ -169,7 +223,9 @@ app.post('/products', async (c) => {
         price,
         priceMin,
         priceMax,
-        imageUrl: imageUrl?.trim(),
+        // imageUrl segue a primeira imagem da galeria (compatibilidade: carrinho, ML, OG).
+        imageUrl: images[0]?.url ?? imageUrl?.trim() ?? null,
+        images: images.length ? images : null,
         inStock: inStock ?? true,
       })
       .returning()
@@ -200,13 +256,21 @@ app.patch('/products/:id', async (c) => {
     // Whitelist of patchable fields — slug excluded intentionally (breaks URLs/cache)
     const PATCHABLE: Array<keyof typeof products.$inferInsert> = [
       'name', 'category', 'description', 'material',
-      'price', 'priceMin', 'priceMax', 'imageUrl', 'inStock',
+      'price', 'priceMin', 'priceMax', 'imageUrl', 'images', 'inStock',
       'weightG', 'lengthCm', 'widthCm', 'heightCm',
     ]
 
     const patch = Object.fromEntries(
       PATCHABLE.filter((key) => key in body).map((key) => [key, body[key]]),
     ) as Partial<typeof products.$inferInsert>
+
+    // Galeria: normaliza e mantém imageUrl apontando para a primeira imagem.
+    if ('images' in patch) {
+      const images = sanitizeImages(patch.images)
+      patch.images = images.length ? images : null
+      const cover = images[0]
+      if (cover) patch.imageUrl = cover.url
+    }
 
     if (Object.keys(patch).length === 0) {
       return c.json({ error: 'Nenhum campo valido para atualizar' }, 400)

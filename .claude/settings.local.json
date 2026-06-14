@@ -8,7 +8,14 @@
       "mcp__chrome-devtools__new_page",
       "mcp__chrome-devtools__navigate_page",
       "mcp__chrome-devtools__wait_for",
-      "mcp__chrome-devtools__list_console_messages"
+      "mcp__chrome-devtools__list_console_messages",
+      "Read(//private/tmp/graphify-skill/**)",
+      "Bash(uv --version)",
+      "Bash(pipx --version)",
+      "Bash(uv tool *)",
+      "Bash(graphify --version)",
+      "Bash(graphify install *)",
+      "Bash(graphify export *)"
     ]
   }
 }

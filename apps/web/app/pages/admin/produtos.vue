@@ -4,7 +4,7 @@ definePageMeta({ layout: 'admin', middleware: ['admin'] })
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { formatPrice } from '@/utils/format'
-import type { Product } from '@/types/product'
+import type { Product, ProductImage } from '@/types/product'
 
 type ProductCategory = Product['category']
 
@@ -18,6 +18,7 @@ interface ProductForm {
   priceMin: number
   priceMax: number
   imageUrl: string
+  images: ProductImage[]
   inStock: boolean
   weightG: number
   lengthCm: number
@@ -39,18 +40,24 @@ const saving = ref(false)
 const form = ref<ProductForm>({
   slug: '', name: '', category: 'espeto', description: '',
   material: '', price: 0, priceMin: 0, priceMax: 0,
-  imageUrl: '', inStock: true,
+  imageUrl: '', images: [], inStock: true,
   weightG: 500, lengthCm: 30, widthCm: 20, heightCm: 10,
 })
 
+const uploading = ref(false)
+const uploadError = ref('')
+const fileInput = ref<HTMLInputElement | null>(null)
+
 function openAdd() {
   editingId.value = null
-  form.value = { slug: '', name: '', category: 'espeto' as ProductCategory, description: '', material: '', price: 0, priceMin: 0, priceMax: 0, imageUrl: '', inStock: true, weightG: 500, lengthCm: 30, widthCm: 20, heightCm: 10 }
+  uploadError.value = ''
+  form.value = { slug: '', name: '', category: 'espeto' as ProductCategory, description: '', material: '', price: 0, priceMin: 0, priceMax: 0, imageUrl: '', images: [], inStock: true, weightG: 500, lengthCm: 30, widthCm: 20, heightCm: 10 }
   showModal.value = true
 }
 
 function openEdit(p: Product) {
   editingId.value = p.id
+  uploadError.value = ''
   form.value = {
     slug: p.slug,
     name: p.name,
@@ -61,6 +68,7 @@ function openEdit(p: Product) {
     priceMin: p.priceMin,
     priceMax: p.priceMax,
     imageUrl: p.imageUrl ?? '',
+    images: Array.isArray(p.images) ? [...p.images] : [],
     inStock: p.inStock,
     weightG: p.weightG ?? 500,
     lengthCm: p.lengthCm ?? 30,
@@ -103,6 +111,55 @@ async function saveProduct() {
   } finally {
     saving.value = false
   }
+}
+
+async function onFilesSelected(e: Event) {
+  const input = e.target as HTMLInputElement
+  const files = Array.from(input.files ?? [])
+  if (!files.length) return
+  uploadError.value = ''
+  uploading.value = true
+  const base = (useRuntimeConfig().public.apiUrl as string || '').replace(/\/$/, '')
+  const key = import.meta.client ? (sessionStorage.getItem('admin-key') ?? '') : ''
+  try {
+    for (const file of files) {
+      if (!file.type.startsWith('image/')) { uploadError.value = `"${file.name}" não é uma imagem`; continue }
+      const fd = new FormData()
+      fd.append('file', file)
+      const res = await fetch(`${base}/api/admin/uploads`, {
+        method: 'POST',
+        headers: { 'x-admin-key': key },
+        body: fd,
+      })
+      if (res.ok) {
+        const img = (await res.json()) as ProductImage
+        form.value.images.push(img)
+      } else {
+        const data = await res.json().catch(() => ({}))
+        uploadError.value = (data as { error?: string }).error ?? `Erro ${res.status} ao enviar "${file.name}"`
+      }
+    }
+  } catch {
+    uploadError.value = 'Erro de conexão ao enviar imagem'
+  } finally {
+    uploading.value = false
+    if (fileInput.value) fileInput.value.value = ''
+  }
+}
+
+async function removeImage(idx: number) {
+  const img = form.value.images[idx]
+  form.value.images.splice(idx, 1)
+  // Limpa o objeto no R2 (best-effort) — só imagens hospedadas têm key.
+  if (img?.key) {
+    adminFetch(`/api/admin/uploads/${img.key}`, { method: 'DELETE' }).catch(() => {})
+  }
+}
+
+function setCover(idx: number) {
+  if (idx <= 0) return
+  const [img] = form.value.images.splice(idx, 1)
+  if (img) form.value.images.unshift(img)
 }
 
 async function toggleStock(p: Product) {
@@ -248,7 +305,42 @@ onMounted(fetchProducts)
           </div>
 
           <div class="form-group">
-            <label>URL da Imagem</label>
+            <label>Fotos do produto</label>
+            <div class="uploader">
+              <div v-if="form.images.length" class="thumb-grid">
+                <div
+                  v-for="(img, idx) in form.images"
+                  :key="img.url"
+                  class="thumb"
+                  :class="{ 'thumb--cover': idx === 0 }"
+                >
+                  <img :src="img.url" :alt="`Foto ${idx + 1}`" />
+                  <span v-if="idx === 0" class="thumb-badge">Capa</span>
+                  <div class="thumb-actions">
+                    <button v-if="idx !== 0" type="button" class="thumb-btn" title="Definir como capa" @click="setCover(idx)">★</button>
+                    <button type="button" class="thumb-btn thumb-btn--del" title="Remover" @click="removeImage(idx)">✕</button>
+                  </div>
+                </div>
+              </div>
+
+              <label class="upload-drop" :class="{ 'is-loading': uploading }">
+                <input
+                  ref="fileInput"
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  hidden
+                  @change="onFilesSelected"
+                />
+                <span v-if="uploading">Enviando...</span>
+                <span v-else>+ Adicionar fotos <small>(pode selecionar várias)</small></span>
+              </label>
+              <p v-if="uploadError" class="upload-error">{{ uploadError }}</p>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>URL da Imagem (opcional — usada se nenhuma foto enviada)</label>
             <input v-model="form.imageUrl" type="url" placeholder="https://..." />
           </div>
 
@@ -437,6 +529,81 @@ onMounted(fetchProducts)
 }
 .btn-edit { border-color: rgba(202,138,4,0.3); color: #ca8a04; background: rgba(202,138,4,0.08); }
 .btn-delete { border-color: rgba(248,113,113,0.3); color: #f87171; background: rgba(248,113,113,0.08); }
+
+/* Uploader de imagens */
+.uploader { display: flex; flex-direction: column; gap: 0.75rem; }
+
+.thumb-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(88px, 1fr));
+  gap: 0.6rem;
+}
+
+.thumb {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: #0c0a09;
+}
+.thumb--cover { border-color: #ca8a04; }
+.thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+.thumb-badge {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  background: #ca8a04;
+  color: #0c0a09;
+  font-size: 0.6rem;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.thumb-actions {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  display: flex;
+  gap: 3px;
+}
+.thumb-btn {
+  width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  border: none;
+  border-radius: 4px;
+  background: rgba(12,10,9,0.8);
+  color: #f5f5f4;
+  font-size: 0.7rem;
+  cursor: pointer;
+  line-height: 1;
+}
+.thumb-btn:hover { background: #ca8a04; color: #0c0a09; }
+.thumb-btn--del:hover { background: #f87171; color: #0c0a09; }
+
+.upload-drop {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  border: 1px dashed rgba(255,255,255,0.2);
+  border-radius: 6px;
+  color: #a8a29e;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+  text-align: center;
+}
+.upload-drop:hover { border-color: #ca8a04; color: #ca8a04; }
+.upload-drop small { color: #78716c; }
+.upload-drop.is-loading { opacity: 0.6; pointer-events: none; }
+.upload-error { color: #f87171; font-size: 0.75rem; margin: 0; }
 
 /* Modal */
 .modal-overlay {

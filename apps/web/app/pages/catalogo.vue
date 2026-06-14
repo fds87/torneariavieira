@@ -49,7 +49,7 @@ import { computed, onMounted, ref } from 'vue'
 
 const store = useProductStore()
 const active = ref('all')
-const whatsapp = 'https://wa.me/5541999802662'
+const whatsapp = 'https://wa.me/5541998035540'
 
 const categories = [
   { value: 'all', label: 'Todos' },

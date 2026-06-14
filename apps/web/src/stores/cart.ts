@@ -1,5 +1,5 @@
 import { ref, computed, watch } from 'vue'
-import { defineStore } from 'pinia'
+import { defineStore, skipHydrate } from 'pinia'
 import type { CartItem, Product } from '@/types/product'
 
 const STORAGE_KEY = 'forja-brasa-cart'
@@ -14,7 +14,7 @@ function loadCart(): CartItem[] {
 }
 
 export const useCartStore = defineStore('cart', () => {
-  const items = ref<CartItem[]>(loadCart())
+  const items = skipHydrate(ref<CartItem[]>(loadCart()))
 
   const totalItems = computed(() =>
     items.value.reduce((sum, i) => sum + i.quantity, 0),

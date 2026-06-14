@@ -70,7 +70,7 @@
 </template>
 
 <script setup>
-const whatsapp = 'https://wa.me/5541999802662'
+const whatsapp = 'https://wa.me/5541998035540'
 const specialties = ['Eixos sob medida', 'Conjuntos mecânicos', 'Nacionalização de importados', 'Cabeçotes angulares', 'Molas usinadas', 'Bicos de injetora']
 
 const grid = ref(null)

@@ -61,7 +61,11 @@ async function saveAddress() {
   if (editingId.value !== null) {
     await addressStore.updateAddress(editingId.value, data, auth.accessToken)
   } else {
-    await addressStore.createAddress(data, auth.accessToken)
+    const result = await addressStore.createAddress(data, auth.accessToken)
+    if (result && 'error' in result) {
+      formError.value = result.error
+      return
+    }
   }
   showForm.value = false
 }

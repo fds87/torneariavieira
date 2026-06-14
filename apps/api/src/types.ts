@@ -1,5 +1,6 @@
 export type Bindings = {
   DB: D1Database
+  BUCKET: R2Bucket
   ADMIN_KEY: string
   MP_ACCESS_TOKEN: string
   MP_PUBLIC_KEY: string

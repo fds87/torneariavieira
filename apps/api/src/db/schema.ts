@@ -1,6 +1,9 @@
 import { sqliteTable, text, integer, real } from 'drizzle-orm/sqlite-core'
 import { sql } from 'drizzle-orm'
 
+// Uma imagem da galeria do produto. `key` aponta para o objeto no R2 (permite remoção).
+export type ProductImage = { url: string; key?: string }
+
 export const users = sqliteTable('users', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   name: text('name').notNull(),
@@ -45,6 +48,8 @@ export const products = sqliteTable('products', {
   priceMin: real('price_min').notNull(),
   priceMax: real('price_max').notNull(),
   imageUrl: text('image_url'),
+  // Galeria de imagens (JSON). Cada item: { url, key? }. `key` presente quando hospedada no R2.
+  images: text('images', { mode: 'json' }).$type<ProductImage[]>(),
   inStock: integer('in_stock', { mode: 'boolean' }).notNull().default(true),
   weightG: integer('weight_g').default(500),
   lengthCm: real('length_cm').default(30),

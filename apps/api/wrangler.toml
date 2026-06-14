@@ -3,18 +3,30 @@ main = "src/index.ts"
 compatibility_date = "2025-07-01"
 compatibility_flags = ["nodejs_compat"]
 
+routes = [
+  { pattern = "torneariavieiraoficial.com.br/api/*", zone_name = "torneariavieiraoficial.com.br" }
+]
+
 [[d1_databases]]
 binding = "DB"
 database_name = "torneariavieira"
 database_id = "eec0503f-dc21-4959-870d-084b48fe4b4b"
 migrations_dir = "src/db/migrations"
 
+# Armazenamento de imagens de produtos. Criar com:
+#   wrangler r2 bucket create tv-uploads
+[[r2_buckets]]
+binding = "BUCKET"
+bucket_name = "tv-uploads"
+
 [vars]
 NODE_ENV = "production"
 APP_BASE_URL = "https://torneariavieiraoficial.com.br"
+ML_REDIRECT_URI = "https://torneariavieiraoficial.com.br/api/ml/auth/callback"
 # Secrets — configurar via: wrangler secret put <NAME>
 # wrangler secret put ADMIN_KEY
 # wrangler secret put MP_ACCESS_TOKEN
+# wrangler secret put MP_PUBLIC_KEY
 # wrangler secret put JWT_SECRET
 # wrangler secret put ML_CLIENT_ID
 # wrangler secret put ML_CLIENT_SECRET

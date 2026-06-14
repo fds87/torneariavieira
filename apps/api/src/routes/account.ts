@@ -161,16 +161,13 @@ account.post('/addresses', async (c) => {
     return c.json({ error: 'cep, street, number, neighborhood, city e state são obrigatórios' }, 400)
   }
 
-  const addr = await db.transaction(async (tx) => {
-    if (isDefault) {
-      await tx.update(addresses).set({ isDefault: false }).where(eq(addresses.userId, userId))
-    }
-    const [row] = await tx
-      .insert(addresses)
-      .values({ userId, label: label ?? 'Casa', cep, street, number, complement: complement ?? null, neighborhood, city, state, isDefault: isDefault ?? false })
-      .returning()
-    return row
-  })
+  if (isDefault) {
+    await db.update(addresses).set({ isDefault: false }).where(eq(addresses.userId, userId))
+  }
+  const [addr] = await db
+    .insert(addresses)
+    .values({ userId, label: label ?? 'Casa', cep, street, number, complement: complement ?? null, neighborhood, city, state, isDefault: isDefault ?? false })
+    .returning()
   return c.json(addr, 201)
 })
 
@@ -196,13 +193,10 @@ account.patch('/addresses/:id', async (c) => {
     if (body[f] !== undefined) (updates as Record<string, unknown>)[f] = body[f]
   }
 
-  const updated = await db.transaction(async (tx) => {
-    if (body.isDefault) {
-      await tx.update(addresses).set({ isDefault: false }).where(eq(addresses.userId, userId))
-    }
-    const [row] = await tx.update(addresses).set(updates).where(eq(addresses.id, id)).returning()
-    return row
-  })
+  if (body.isDefault) {
+    await db.update(addresses).set({ isDefault: false }).where(eq(addresses.userId, userId))
+  }
+  const [updated] = await db.update(addresses).set(updates).where(eq(addresses.id, id)).returning()
   return c.json(updated)
 })
 
@@ -228,11 +222,8 @@ account.post('/addresses/:id/default', async (c) => {
   const owned = await getOwnedAddress(db, id, userId)
   if ('error' in owned) return c.json({ error: owned.error }, owned.status)
 
-  const updated = await db.transaction(async (tx) => {
-    await tx.update(addresses).set({ isDefault: false }).where(eq(addresses.userId, userId))
-    const [row] = await tx.update(addresses).set({ isDefault: true }).where(eq(addresses.id, id)).returning()
-    return row
-  })
+  await db.update(addresses).set({ isDefault: false }).where(eq(addresses.userId, userId))
+  const [updated] = await db.update(addresses).set({ isDefault: true }).where(eq(addresses.id, id)).returning()
   return c.json(updated)
 })
 

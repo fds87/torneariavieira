@@ -2,11 +2,11 @@ export const site = {
   name: 'Tornearia Vieira',
   tagline: 'Precisão em usinagem e fabricação de peças industriais sob desenho',
   location: 'São José dos Pinhais — PR',
-  phone: '41999802662',
-  phoneFormatted: '(41) 99980-2662',
-  whatsapp: 'https://wa.me/5541999802662',
+  phone: '41998035540',
+  phoneFormatted: '(41) 99803-5540',
+  whatsapp: 'https://wa.me/5541998035540',
   facebook: 'https://www.facebook.com/profile.php?id=100095592520678',
-  email: 'contato@torneariavieiraoficial.com.br',
+  email: 'orcamento@torneariavieiraoficial.com.br',
 }
 
 export const slides = [
