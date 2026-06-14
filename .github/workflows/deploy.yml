@@ -33,7 +33,7 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: apps/web
-          command: pages deploy .output/public --project-name=torneariavieira
+          command: pages deploy .output/public --project-name=torneariavieira --branch=master --commit-dirty=true
 
   deploy-api:
     name: Deploy API to Cloudflare Workers
