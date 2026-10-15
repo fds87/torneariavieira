@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1775781995655,
+      "tag": "0000_lush_silver_fox",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1775933010735,
+      "tag": "0001_silly_mystique",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1775980800000,
+      "tag": "0002_password_reset_tokens",
+      "breakpoints": true
+    }
+  ]
+}

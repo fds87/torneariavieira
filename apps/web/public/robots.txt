@@ -1,0 +1,74 @@
+# Tornearia Vieira — https://torneariavieiraoficial.com.br
+# Indexação aberta para motores de busca e agentes de IA.
+# Áreas privadas (admin, conta, checkout) bloqueadas para todos.
+
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /conta
+Disallow: /checkout
+Disallow: /carrinho
+Disallow: /pagamento
+
+# ── Agentes de IA explicitamente permitidos ──────────────────────────────────
+# OpenAI (ChatGPT / GPT)
+User-agent: GPTBot
+Allow: /
+Disallow: /admin
+Disallow: /conta
+Disallow: /checkout
+Disallow: /carrinho
+Disallow: /pagamento
+
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /admin
+Disallow: /conta
+Disallow: /checkout
+Disallow: /carrinho
+Disallow: /pagamento
+
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /admin
+Disallow: /conta
+Disallow: /checkout
+Disallow: /carrinho
+Disallow: /pagamento
+
+# Google (Gemini / AI Overviews)
+User-agent: Google-Extended
+Allow: /
+Disallow: /admin
+Disallow: /conta
+Disallow: /checkout
+Disallow: /carrinho
+Disallow: /pagamento
+
+# Anthropic (Claude)
+User-agent: ClaudeBot
+Allow: /
+Disallow: /admin
+Disallow: /conta
+Disallow: /checkout
+Disallow: /carrinho
+Disallow: /pagamento
+
+User-agent: anthropic-ai
+Allow: /
+Disallow: /admin
+Disallow: /conta
+Disallow: /checkout
+Disallow: /carrinho
+Disallow: /pagamento
+
+# Perplexity
+User-agent: PerplexityBot
+Allow: /
+Disallow: /admin
+Disallow: /conta
+Disallow: /checkout
+Disallow: /carrinho
+Disallow: /pagamento
+
+Sitemap: https://torneariavieiraoficial.com.br/sitemap.xml

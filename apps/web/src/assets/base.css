@@ -1,0 +1,178 @@
+/* Forja & Brasa — Design System v4 Monolith */
+/* Typography: Cormorant Garamond (display) + Inter (body) + JetBrains Mono */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Cormorant:ital,wght@0,400;1,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  /* Color system — Monolith Ember */
+  --c-ink: #0b0a08;
+  --c-ink-card: #141210;
+  --c-ink-high: #1c1a17;
+  --c-ink-deeper: #050403;
+  --c-ivory: #eeeae2;
+  --c-ivory-dim: #a6a098;
+  --c-ivory-mute: #6f6961;
+  --c-ember: #d96417;
+  --c-ember-hot: #f08a3f;
+  --c-ember-glow: rgba(217, 100, 23, 0.18);
+  --c-hair: rgba(238, 234, 226, 0.08);
+  --c-hair-bold: rgba(238, 234, 226, 0.2);
+
+  /* Legacy aliases kept for non-home views */
+  --c-black: #0b0a08;
+  --c-stone-950: #1c1a17;
+  --c-stone-900: #141210;
+  --c-stone-800: #44403c;
+  --c-stone-700: #57534e;
+  --c-stone-500: #6f6961;
+  --c-stone-400: #a6a098;
+  --c-stone-300: #eeeae2;
+  --c-stone-200: #e7e5e3;
+  --c-stone-100: #f5f5f4;
+  --c-stone-50: #fafaf9;
+  --c-gold: #d96417;
+  --c-gold-light: #f08a3f;
+  --c-gold-dark: #a16207;
+  --c-amber: #d96417;
+  --c-orange: #f08a3f;
+  --c-red: #dc2626;
+  --c-white: #eeeae2;
+
+  /* Semantic tokens */
+  --bg: var(--c-ink);
+  --bg-alt: var(--c-ink-deeper);
+  --bg-card: var(--c-ink-card);
+  --bg-card-hover: rgba(238, 234, 226, 0.04);
+  --border: var(--c-hair);
+  --border-hover: var(--c-hair-bold);
+  --text: var(--c-ivory-dim);
+  --text-muted: var(--c-ivory-mute);
+  --text-heading: var(--c-ivory);
+  --accent: var(--c-ember);
+  --accent-hover: var(--c-ember-hot);
+
+  /* Typography */
+  --font-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --font-editorial: 'Cormorant', Georgia, serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  /* Spacing */
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 1.5rem;
+  --space-lg: 3rem;
+  --space-xl: 5rem;
+  --space-2xl: 8rem;
+  --space-3xl: 12rem;
+
+  /* Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 24px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 12px 48px rgba(0, 0, 0, 0.5);
+  --shadow-gold: 0 4px 30px rgba(202, 138, 4, 0.15);
+
+  /* Transitions */
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --duration-fast: 150ms;
+  --duration: 300ms;
+  --duration-slow: 600ms;
+}
+
+/* Reset */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100vh;
+  color: var(--text);
+  background: var(--bg);
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.6;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.1;
+  color: var(--text-heading);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color var(--duration) var(--ease);
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+button {
+  cursor: pointer;
+  font-family: var(--font-body);
+  border: none;
+  background: none;
+}
+
+/* Utility: Container */
+.container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 var(--space-md);
+}
+
+.container--narrow {
+  max-width: 800px;
+}
+
+/* Scroll reveal animation base */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity var(--duration-slow) var(--ease-out),
+              transform var(--duration-slow) var(--ease-out),
+              filter var(--duration-slow) var(--ease-out);
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Directional reveal variants */
+.reveal--left  { transform: translateX(-52px); }
+.reveal--right { transform: translateX(52px); }
+.reveal--scale { transform: translateY(20px) scale(0.88); }
+.reveal--blur  { transform: translateY(30px); filter: blur(8px); }
+.reveal--blur.visible { filter: blur(0); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+  html { scroll-behavior: auto; }
+  .reveal { opacity: 1; transform: none; }
+}
