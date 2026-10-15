@@ -13,7 +13,7 @@ const router = useRouter()
 const productStore = useProductStore()
 const cart = useCartStore()
 
-const whatsapp = 'https://wa.me/5541998035540'
+const whatsapp = 'https://wa.me/5541999802662'
 
 const slug = computed(() => {
   const raw = route.params.slug

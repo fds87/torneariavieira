@@ -72,7 +72,7 @@ const cart = useCartStore()
 const auth = useAuthStore()
 const router = useRouter()
 
-const whatsapp = 'https://wa.me/5541998035540'
+const whatsapp = 'https://wa.me/5541999802662'
 const scrolled = ref(false)
 const mobileOpen = ref(false)
 const dropdown = ref(false)

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const whatsapp = 'https://wa.me/5541998035540'
+const whatsapp = 'https://wa.me/5541999802662'
 </script>
 
 <template>
