@@ -57,7 +57,7 @@ import { services } from '~/data/content.js'
 
 const failed = reactive(new Set())
 
-const quoteLink = (title) => `https://wa.me/5541998035540?text=${encodeURIComponent('Olá! Tenho interesse em: ' + title)}`
+const quoteLink = (title) => `https://wa.me/5541999802662?text=${encodeURIComponent('Olá! Tenho interesse em: ' + title)}`
 </script>
 
 <style scoped>

@@ -51,7 +51,7 @@ import { SITE_URL } from '@/lib/business'
 
 const store = useProductStore()
 const active = ref('all')
-const whatsapp = 'https://wa.me/5541998035540'
+const whatsapp = 'https://wa.me/5541999802662'
 
 const categories = [
   { value: 'all', label: 'Todos' },
